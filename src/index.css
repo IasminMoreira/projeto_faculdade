@@ -1,0 +1,78 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background-color: #f8f9fa;
+    color: #191c1d;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  .material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    font-size: 24px;
+    line-height: 1;
+    user-select: none;
+  }
+
+  .icon-filled {
+    font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  }
+}
+
+@layer components {
+  /* Botão primário (coral/tertiary) */
+  .btn-primary {
+    @apply bg-tertiary text-on-tertiary font-semibold py-md px-xl rounded-full
+           shadow-sm hover:brightness-110 active:scale-95 transition-all duration-150
+           flex items-center justify-center gap-sm;
+  }
+
+  /* Botão secundário (verde/primary) */
+  .btn-secondary {
+    @apply bg-primary text-on-primary font-semibold py-md px-xl rounded-full
+           shadow-sm hover:bg-surface-tint active:scale-95 transition-all duration-150
+           flex items-center justify-center gap-sm;
+  }
+
+  /* Botão outline */
+  .btn-outline {
+    @apply border border-primary text-primary font-semibold py-md px-xl rounded-full
+           hover:bg-primary-fixed/30 active:scale-95 transition-all duration-150
+           flex items-center justify-center gap-sm;
+  }
+
+  /* Card padrão */
+  .card {
+    @apply bg-surface-container-lowest rounded-xl shadow-card border border-surface-container-high;
+  }
+
+  /* Input padrão */
+  .input {
+    @apply w-full h-12 px-md rounded-lg border border-outline-variant bg-surface-bright
+           focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all
+           font-sans text-body-md text-on-surface placeholder:text-outline;
+  }
+
+  /* Chip / tag pill */
+  .chip {
+    @apply px-md py-xs rounded-full text-label-md font-semibold;
+  }
+
+  /* Nav item */
+  .nav-item {
+    @apply flex flex-col items-center justify-center px-3 py-1
+           text-outline hover:text-primary transition-colors duration-150 active:scale-90;
+  }
+
+  .nav-item.active {
+    @apply text-primary bg-primary-fixed/40 rounded-xl;
+  }
+}
