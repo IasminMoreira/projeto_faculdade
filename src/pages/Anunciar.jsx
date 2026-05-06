@@ -1,7 +1,7 @@
 import { useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useApp } from '../context/AppContext'
-import { Icone } from '../components/ui'
+import { Icone, Logo } from '../components/ui'
 import { categorias } from '../data/mock'
 
 const condicoes = ['Novo', 'Bom estado', 'Usado']
@@ -78,20 +78,20 @@ export default function Anunciar() {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-surface-container flex items-center justify-between px-4 h-16">
-        <button onClick={() => navigate(-1)} className="p-2 rounded-full hover:bg-surface-container active:scale-95">
-          <Icone nome="arrow_back" className="text-on-surface-variant" />
+      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-creme-300 flex items-center justify-between px-4 h-16">
+        <button onClick={() => navigate(-1)} className="p-2 rounded-full hover:bg-creme-200 active:scale-95">
+          <Icone nome="arrow_back" className="text-on-surface-muted" />
         </button>
-        <span className="text-xl font-black text-primary">Doa aí</span>
-        <button onClick={() => navigate('/notificacoes')} className="p-2 rounded-full hover:bg-surface-container active:scale-95">
-          <Icone nome="notifications" className="text-on-surface-variant" />
+        <Logo height={72}/>
+        <button onClick={() => navigate('/notificacoes')} className="p-2 rounded-full hover:bg-creme-200 active:scale-95">
+          <Icone nome="notifications" className="text-on-surface-muted" />
         </button>
       </header>
 
       <main className="max-w-2xl mx-auto px-4 py-xl pb-32">
         <div className="text-center mb-xxl">
-          <h1 className="text-h1 font-h1 text-primary mb-sm">Criar novo anúncio</h1>
-          <p className="text-body-lg text-on-surface-variant">
+          <h1 className="text-h1 font-h1 text-verde-600 mb-sm">Criar novo anúncio</h1>
+          <p className="text-body-lg text-on-surface-muted">
             Sua doação pode fazer o dia de alguém melhor.<br />Compartilhe o que você não usa mais.
           </p>
         </div>
@@ -100,19 +100,19 @@ export default function Anunciar() {
           {/* Fotos */}
           <section className="card p-lg">
             <h3 className="text-h3 font-h3 text-on-surface mb-md flex items-center gap-sm">
-              <Icone nome="add_a_photo" className="text-primary" />Fotos do item
+              <Icone nome="add_a_photo" className="text-verde-600" />Fotos do item
             </h3>
             <input ref={inputRef} type="file" accept="image/*" multiple className="hidden" onChange={handleFotos} />
             <div className="grid grid-cols-2 md:grid-cols-4 gap-md">
               {fotos.length < 4 && (
                 <button type="button" onClick={() => inputRef.current.click()}
-                  className="aspect-square rounded-xl border-2 border-dashed border-outline-variant bg-surface-container-low flex flex-col items-center justify-center cursor-pointer hover:bg-surface-container transition-colors group">
-                  <Icone nome="upload" tamanho={32} className="text-primary group-hover:scale-110 transition-transform" />
-                  <span className="text-label-md text-on-surface-variant mt-sm">Adicionar</span>
+                  className="aspect-square rounded-xl border-2 border-dashed border-outline-variant bg-creme-100 flex flex-col items-center justify-center cursor-pointer hover:bg-creme-200 transition-colors group">
+                  <Icone nome="upload" tamanho={32} className="text-verde-600 group-hover:scale-110 transition-transform" />
+                  <span className="text-label-md text-on-surface-muted mt-sm">Adicionar</span>
                 </button>
               )}
               {fotos.map((foto, i) => (
-                <div key={i} className="aspect-square rounded-xl overflow-hidden relative border border-surface-container">
+                <div key={i} className="aspect-square rounded-xl overflow-hidden relative border border-creme-300">
                   <img src={foto} alt="" className="w-full h-full object-cover" />
                   <button type="button" onClick={() => removerFoto(i)}
                     className="absolute top-1 right-1 bg-error text-on-error rounded-full w-6 h-6 flex items-center justify-center shadow active:scale-95">
@@ -124,23 +124,23 @@ export default function Anunciar() {
                 </div>
               ))}
               {Array.from({ length: Math.max(0, 3 - fotos.length) }).map((_, i) => (
-                <div key={`v${i}`} className="aspect-square rounded-xl bg-surface-container-low border border-surface-container" />
+                <div key={`v${i}`} className="aspect-square rounded-xl bg-creme-100 border border-creme-300" />
               ))}
             </div>
-            <p className="text-label-md text-on-surface-variant mt-md">Dica: Fotos claras ajudam a encontrar um novo dono mais rápido. Máximo 4 fotos.</p>
+            <p className="text-label-md text-on-surface-muted mt-md">Dica: Fotos claras ajudam a encontrar um novo dono mais rápido. Máximo 4 fotos.</p>
           </section>
 
           {/* Detalhes */}
           <section className="card p-lg space-y-lg">
             <h3 className="text-h3 font-h3 text-on-surface">Detalhes do item</h3>
             <div className="space-y-xs">
-              <label className="block text-label-md text-on-surface-variant">Título do anúncio *</label>
+              <label className="block text-label-md text-on-surface-muted">Título do anúncio *</label>
               <input className="input" placeholder="Ex: Cadeira de balanço em madeira"
                 value={titulo} onChange={e => setTitulo(e.target.value)} required />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-lg">
               <div className="space-y-xs">
-                <label className="block text-label-md text-on-surface-variant">Categoria</label>
+                <label className="block text-label-md text-on-surface-muted">Categoria</label>
                 <div className="relative">
                   <select className="input appearance-none pr-10" value={categoria} onChange={e => setCategoria(e.target.value)}>
                     <option value="">Selecionar...</option>
@@ -148,16 +148,16 @@ export default function Anunciar() {
                       <option key={c.id} value={c.id}>{c.label}</option>
                     ))}
                   </select>
-                  <Icone nome="expand_more" className="absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none" />
+                  <Icone nome="expand_more" className="absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-muted pointer-events-none" />
                 </div>
               </div>
               <div className="space-y-xs">
-                <label className="block text-label-md text-on-surface-variant">Condição</label>
+                <label className="block text-label-md text-on-surface-muted">Condição</label>
                 <div className="flex flex-wrap gap-sm">
                   {condicoes.map(c => (
                     <button key={c} type="button" onClick={() => setCondicao(c)}
                       className={`px-md py-sm rounded-full border text-label-md transition-all
-                        ${condicao === c ? 'border-primary bg-primary-fixed text-on-primary-fixed-variant' : 'border-outline-variant text-on-surface-variant hover:border-primary'}`}>
+                        ${condicao === c ? 'border-primary bg-coral-50 text-on-primary-fixed-variant' : 'border-outline-variant text-on-surface-muted hover:border-primary'}`}>
                       {c}
                     </button>
                   ))}
@@ -165,7 +165,7 @@ export default function Anunciar() {
               </div>
             </div>
             <div className="space-y-xs">
-              <label className="block text-label-md text-on-surface-variant">Descrição</label>
+              <label className="block text-label-md text-on-surface-muted">Descrição</label>
               <textarea className="input h-auto py-md" rows={4}
                 placeholder="Conte mais sobre o item, dimensões e por que está doando..."
                 value={descricao} onChange={e => setDescricao(e.target.value)} />
@@ -175,7 +175,7 @@ export default function Anunciar() {
           {/* Localização — botões funcionando */}
           <section className="card p-lg">
             <h3 className="text-h3 font-h3 text-on-surface mb-md flex items-center gap-sm">
-              <Icone nome="location_on" className="text-primary" />Onde está o item?
+              <Icone nome="location_on" className="text-verde-600" />Onde está o item?
             </h3>
 
             {editandoLocal ? (
@@ -189,7 +189,7 @@ export default function Anunciar() {
                 />
                 <div className="flex gap-sm">
                   <button type="button" onClick={usarGps} disabled={buscandoGps}
-                    className="flex-1 flex items-center justify-center gap-sm p-md rounded-xl border border-primary bg-primary-fixed/20 text-primary font-semibold text-sm hover:bg-primary-fixed/30 transition-colors disabled:opacity-50">
+                    className="flex-1 flex items-center justify-center gap-sm p-md rounded-xl border border-primary bg-coral-50/20 text-verde-600 font-semibold text-sm hover:bg-coral-50 transition-colors disabled:opacity-50">
                     <Icone nome="my_location" tamanho={18} />
                     {buscandoGps ? 'Buscando...' : 'Usar GPS'}
                   </button>
@@ -199,23 +199,23 @@ export default function Anunciar() {
                   </button>
                 </div>
                 <button type="button" onClick={() => setEditandoLocal(false)}
-                  className="w-full text-on-surface-variant text-sm hover:text-on-surface py-sm">Cancelar</button>
+                  className="w-full text-on-surface-muted text-sm hover:text-on-surface py-sm">Cancelar</button>
               </div>
             ) : (
               <>
-                <div className="flex items-center gap-md p-md bg-surface-container-low rounded-lg border border-surface-container mb-md">
+                <div className="flex items-center gap-md p-md bg-creme-100 rounded-lg border border-creme-300 mb-md">
                   <div className="bg-primary-container p-sm rounded-full flex-shrink-0">
                     <Icone nome="my_location" className="text-on-primary-container" />
                   </div>
                   <div className="flex-1">
                     <p className="text-label-md text-on-surface">Localização atual</p>
-                    <p className="text-xs text-on-surface-variant">{localizacao}</p>
+                    <p className="text-xs text-on-surface-muted">{localizacao}</p>
                   </div>
                   <button type="button" onClick={() => { setEditandoLocal(true); setLocalTemp(localizacao) }}
-                    className="text-secondary text-label-md hover:underline active:scale-95">Alterar</button>
+                    className="text-coral-600 text-label-md hover:underline active:scale-95">Alterar</button>
                 </div>
-                <div className="h-36 rounded-xl bg-surface-container-high flex items-center justify-center border border-surface-container">
-                  <div className="text-center text-on-surface-variant">
+                <div className="h-36 rounded-xl bg-creme-200 flex items-center justify-center border border-creme-300">
+                  <div className="text-center text-on-surface-muted">
                     <Icone nome="map" tamanho={40} className="text-outline mb-xs" />
                     <p className="text-sm">{localizacao}</p>
                   </div>
@@ -226,10 +226,10 @@ export default function Anunciar() {
 
           <div className="pt-lg">
             <button type="submit" disabled={!titulo.trim()}
-              className="btn-secondary w-full text-body-lg py-lg disabled:opacity-50">
+              className="btn-verde w-full text-body-lg py-lg disabled:opacity-50">
               Publicar Doação<Icone nome="send" />
             </button>
-            <p className="text-center text-label-md text-on-surface-variant mt-md flex items-center justify-center gap-xs">
+            <p className="text-center text-label-md text-on-surface-muted mt-md flex items-center justify-center gap-xs">
               <Icone nome="verified_user" tamanho={14} />Seu anúncio será revisado em breve
             </p>
           </div>

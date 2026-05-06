@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useApp } from '../context/AppContext'
-import { Icone, Avatar } from '../components/ui'
+import { Icone, Avatar, Logo } from '../components/ui'
 import { usuarios } from '../data/mock'
 
 export default function DetalheItem() {
@@ -13,8 +13,8 @@ export default function DetalheItem() {
   const item = itens.find(i => i.id === id)
   if (!item) return (
     <div className="flex flex-col items-center justify-center min-h-screen gap-md">
-      <p className="text-on-surface-variant">Item não encontrado.</p>
-      <button onClick={() => navigate('/')} className="btn-secondary">Voltar ao início</button>
+      <p className="text-on-surface-muted">Item não encontrado.</p>
+      <button onClick={() => navigate('/')} className="btn-verde">Voltar ao início</button>
     </div>
   )
 
@@ -46,17 +46,17 @@ export default function DetalheItem() {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-surface-container flex items-center justify-between px-4 h-16 flex-shrink-0">
-        <button onClick={() => navigate(-1)} className="p-2 rounded-full hover:bg-surface-container active:scale-95">
-          <Icone nome="arrow_back" className="text-on-surface-variant" />
+      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-creme-300 flex items-center justify-between px-4 h-16 flex-shrink-0">
+        <button onClick={() => navigate(-1)} className="p-2 rounded-full hover:bg-creme-200 active:scale-95">
+          <Icone nome="arrow_back" className="text-on-surface-muted" />
         </button>
-        <span className="text-xl font-black text-primary">Doa aí</span>
+        <Logo height={72}/>
         <div className="flex gap-1">
-          <button onClick={handleCompartilhar} className="p-2 rounded-full hover:bg-surface-container active:scale-95">
-            <Icone nome="share" className="text-on-surface-variant" />
+          <button onClick={handleCompartilhar} className="p-2 rounded-full hover:bg-creme-200 active:scale-95">
+            <Icone nome="share" className="text-on-surface-muted" />
           </button>
-          <button onClick={() => navigate('/notificacoes')} className="p-2 rounded-full hover:bg-surface-container active:scale-95">
-            <Icone nome="notifications" className="text-on-surface-variant" />
+          <button onClick={() => navigate('/notificacoes')} className="p-2 rounded-full hover:bg-creme-200 active:scale-95">
+            <Icone nome="notifications" className="text-on-surface-muted" />
           </button>
         </div>
       </header>
@@ -66,7 +66,7 @@ export default function DetalheItem() {
         <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-lg p-4">
           {/* Galeria */}
           <div>
-            <div className="relative rounded-xl overflow-hidden bg-surface-container mb-sm">
+            <div className="relative rounded-xl overflow-hidden bg-creme-100 mb-sm">
               <img
                 src={item.fotos[fotoAtiva]}
                 alt={item.titulo}
@@ -92,43 +92,43 @@ export default function DetalheItem() {
           <div className="space-y-md">
             <div className="card p-lg">
               <div className="flex items-center justify-between mb-sm">
-                <span className="chip bg-primary-fixed text-on-primary-fixed-variant capitalize">{item.categoria}</span>
-                <span className="text-xs text-on-surface-variant flex items-center gap-1">
+                <span className="chip bg-verde-600-fixed text-white-fixed-variant capitalize">{item.categoria}</span>
+                <span className="text-xs text-on-surface-muted flex items-center gap-1">
                   <Icone nome="schedule" tamanho={14} />Há 2 horas
                 </span>
               </div>
               <h1 className="text-h2 font-h2 text-on-surface mb-sm">{item.titulo}</h1>
-              <span className="chip bg-surface-container text-on-surface-variant">Condição: {item.condicao}</span>
-              <p className="text-body-md text-on-surface-variant mt-md leading-relaxed">{item.descricao}</p>
+              <span className="chip bg-creme-100 text-on-surface-muted">Condição: {item.condicao}</span>
+              <p className="text-body-md text-on-surface-muted mt-md leading-relaxed">{item.descricao}</p>
             </div>
 
             {/* Doador */}
             {doador && (
               <div className="card p-lg">
-                <h3 className="text-label-md text-on-surface-variant uppercase tracking-wider mb-md">Doador</h3>
+                <h3 className="text-label-md text-on-surface-muted uppercase tracking-wider mb-md">Doador</h3>
                 <button onClick={verPerfil}
-                  className="flex items-center gap-md mb-md w-full hover:bg-surface-container rounded-lg p-sm -mx-sm transition-colors text-left">
+                  className="flex items-center gap-md mb-md w-full hover:bg-creme-200 rounded-lg p-sm -mx-sm transition-colors text-left">
                   <Avatar src={doador.avatar} nome={doador.nome} tamanho={52} />
                   <div>
                     <p className="font-semibold text-on-surface">{doador.nome}</p>
-                    <p className="text-sm text-on-surface-variant flex items-center gap-xs">
+                    <p className="text-sm text-on-surface-muted flex items-center gap-xs">
                       <Icone nome="location_on" tamanho={14} />Vila Mariana, São Paulo
                     </p>
                     <div className="flex items-center gap-xs mt-xs">
-                      <Icone nome="star" tamanho={14} preenchido className="text-tertiary" />
+                      <Icone nome="star" tamanho={14} preenchido className="text-coral-500" />
                       <span className="text-sm font-semibold text-on-surface">{doador.avaliacao}</span>
                     </div>
                   </div>
-                  <Icone nome="chevron_right" className="text-on-surface-variant ml-auto" />
+                  <Icone nome="chevron_right" className="text-on-surface-muted ml-auto" />
                 </button>
                 <div className="grid grid-cols-2 gap-sm">
                   {[
                     { valor: doador.totalDoacoes || 12, label: 'Doações' },
                     { valor: `${doador.anosNaPlataforma || 3} anos`, label: 'Na plataforma' },
                   ].map(({ valor, label }) => (
-                    <div key={label} className="bg-surface-container rounded-lg p-md text-center">
-                      <p className="text-h3 font-h3 text-primary">{valor}</p>
-                      <p className="text-[10px] font-semibold uppercase tracking-wider text-on-surface-variant">{label}</p>
+                    <div key={label} className="bg-creme-100 rounded-lg p-md text-center">
+                      <p className="text-h3 font-h3 text-verde-600">{valor}</p>
+                      <p className="text-[10px] font-semibold uppercase tracking-wider text-on-surface-muted">{label}</p>
                     </div>
                   ))}
                 </div>
@@ -137,15 +137,15 @@ export default function DetalheItem() {
 
             {/* Localização */}
             <div className="card p-lg">
-              <h3 className="text-label-md text-on-surface-variant uppercase tracking-wider mb-md flex items-center gap-xs">
+              <h3 className="text-label-md text-on-surface-muted uppercase tracking-wider mb-md flex items-center gap-xs">
                 <Icone nome="map" tamanho={18} />Localização aproximada
               </h3>
-              <div className="rounded-lg h-36 bg-surface-container-high flex items-center justify-center">
-                <div className="text-center text-on-surface-variant">
-                  <Icone nome="location_on" tamanho={40} className="text-primary mb-xs" />
+              <div className="rounded-lg h-36 bg-creme-200 flex items-center justify-center">
+                <div className="text-center text-on-surface-muted">
+                  <Icone nome="location_on" tamanho={40} className="text-verde-600 mb-xs" />
                   <p className="text-sm">Vila Mariana, São Paulo</p>
                   {item.distancia && item.distancia !== '0km' && (
-                    <p className="text-xs mt-xs text-primary font-semibold">a {item.distancia} de você</p>
+                    <p className="text-xs mt-xs text-verde-600 font-semibold">a {item.distancia} de você</p>
                   )}
                 </div>
               </div>
@@ -155,29 +155,29 @@ export default function DetalheItem() {
       </div>
 
       {/* Botão fixo — esconde "Tenho Interesse" se for meu item */}
-      <div className="fixed bottom-0 left-0 w-full bg-white/95 backdrop-blur-md border-t border-surface-container p-4 z-50 flex-shrink-0">
+      <div className="fixed bottom-0 left-0 w-full bg-white/95 backdrop-blur-md border-t border-creme-300 p-4 z-50 flex-shrink-0">
         <div className="max-w-5xl mx-auto">
           {eMeuItem ? (
             <div className="flex gap-md">
               <button
                 onClick={() => navigate('/meus-anuncios')}
-                className="btn-secondary flex-1 py-md"
+                className="btn-verde flex-1 py-md"
               >
                 <Icone nome="edit" />Gerenciar anúncio
               </button>
               <button
                 onClick={() => navigate('/mensagens')}
-                className="btn-outline flex-1 py-md"
+                className="btn-outline-coral flex-1 py-md"
               >
                 <Icone nome="chat_bubble" />Ver mensagens
               </button>
             </div>
           ) : (
             <>
-              <button onClick={handleInteresse} className="btn-primary w-full text-body-lg py-lg">
+              <button onClick={handleInteresse} className="btn-coral w-full text-body-lg py-lg">
                 <Icone nome="chat_bubble" />Tenho Interesse
               </button>
-              <p className="text-center text-xs text-on-surface-variant mt-sm flex items-center justify-center gap-xs">
+              <p className="text-center text-xs text-on-surface-muted mt-sm flex items-center justify-center gap-xs">
                 <Icone nome="info" tamanho={14} />
                 A entrega é combinada entre as partes. O Doa aí não se responsabiliza pela logística.
               </p>

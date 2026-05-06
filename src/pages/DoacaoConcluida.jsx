@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Icone, Estrelas, Avatar } from '../components/ui'
+import { Icone, Estrelas, Avatar, Logo } from '../components/ui'
 import { usuarioAtual } from '../data/mock'
 
 export default function DoacaoConcluida() {
@@ -15,17 +15,17 @@ export default function DoacaoConcluida() {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       {/* Header */}
-      <header className="bg-white border-b border-surface-container flex items-center justify-between px-4 h-16 sticky top-0 z-40">
-        <button onClick={() => navigate(-1)} className="p-2 rounded-full hover:bg-surface-container active:scale-95">
-          <Icone nome="close" className="text-on-surface-variant" />
+      <header className="bg-white border-b border-creme-300 flex items-center justify-between px-4 h-16 sticky top-0 z-40">
+        <button onClick={() => navigate(-1)} className="p-2 rounded-full hover:bg-creme-200 active:scale-95">
+          <Icone nome="close" className="text-on-surface-muted" />
         </button>
-        <span className="text-xl font-black text-primary">Doa aí</span>
+        <Logo height={72}/>
         <div className="flex gap-1">
-          <button className="p-2 rounded-full hover:bg-surface-container">
-            <Icone nome="location_on" className="text-on-surface-variant" />
+          <button className="p-2 rounded-full hover:bg-creme-200">
+            <Icone nome="location_on" className="text-on-surface-muted" />
           </button>
-          <button className="p-2 rounded-full hover:bg-surface-container">
-            <Icone nome="notifications" className="text-on-surface-variant" />
+          <button className="p-2 rounded-full hover:bg-creme-200">
+            <Icone nome="notifications" className="text-on-surface-muted" />
           </button>
         </div>
       </header>
@@ -34,13 +34,13 @@ export default function DoacaoConcluida() {
         {/* Animação de sucesso */}
         <section className="flex flex-col items-center text-center mb-xl">
           <div className="relative w-48 h-48 mb-lg">
-            <div className="absolute inset-0 bg-primary-fixed opacity-20 rounded-full animate-pulse" />
-            <div className="absolute inset-4 bg-primary-fixed-dim rounded-full flex items-center justify-center">
-              <Icone nome="check_circle" tamanho={80} preenchido className="text-primary" />
+            <div className="absolute inset-0 bg-coral-50 opacity-20 rounded-full animate-pulse" />
+            <div className="absolute inset-4 bg-coral-50-dim rounded-full flex items-center justify-center">
+              <Icone nome="check_circle" tamanho={80} preenchido className="text-verde-600" />
             </div>
           </div>
           <h1 className="text-h1 font-h1 text-on-surface mb-sm">Parabéns pela sua doação!</h1>
-          <p className="text-body-lg text-on-surface-variant px-md">
+          <p className="text-body-lg text-on-surface-muted px-md">
             Você acabou de fazer o dia de alguém melhor. Sua generosidade fortalece nossa comunidade.
           </p>
         </section>
@@ -51,7 +51,7 @@ export default function DoacaoConcluida() {
             <Avatar src={usuarioAtual.avatar} nome={usuarioAtual.nome} tamanho={64} />
             <div>
               <h3 className="text-h3 font-h3 text-on-surface">Ricardo Silva</h3>
-              <p className="text-label-md text-on-surface-variant uppercase tracking-wider">Doador Parceiro</p>
+              <p className="text-label-md text-on-surface-muted uppercase tracking-wider">Doador Parceiro</p>
             </div>
           </div>
 
@@ -63,7 +63,7 @@ export default function DoacaoConcluida() {
           </div>
 
           <div className="space-y-xs">
-            <label className="text-label-md text-on-surface-variant">
+            <label className="text-label-md text-on-surface-muted">
               Conte mais sobre a entrega <span className="font-normal">(opcional)</span>
             </label>
             <textarea
@@ -78,11 +78,11 @@ export default function DoacaoConcluida() {
 
         {/* Ações */}
         <div className="flex flex-col gap-md mb-xl">
-          <button onClick={handleFinalizar} className="btn-primary w-full text-body-lg py-lg">
+          <button onClick={handleFinalizar} className="btn-coral w-full text-body-lg py-lg">
             Finalizar
             <Icone nome="arrow_forward" />
           </button>
-          <button className="btn-outline w-full">
+          <button className="btn-outline-coral w-full">
             Compartilhar meu impacto
           </button>
         </div>
@@ -93,11 +93,11 @@ export default function DoacaoConcluida() {
             {[47, 12, 32].map(i => (
               <img key={i} src={`https://i.pravatar.cc/40?img=${i}`} alt="" className="w-10 h-10 rounded-full border-2 border-white object-cover" />
             ))}
-            <div className="w-10 h-10 rounded-full border-2 border-white bg-primary-fixed-dim flex items-center justify-center text-[10px] font-bold text-primary">
+            <div className="w-10 h-10 rounded-full border-2 border-white bg-coral-50-dim flex items-center justify-center text-[10px] font-bold text-verde-600">
               +12
             </div>
           </div>
-          <p className="text-label-md text-on-surface-variant">
+          <p className="text-label-md text-on-surface-muted">
             Outras 12 pessoas doaram para o Ricardo esta semana
           </p>
         </div>

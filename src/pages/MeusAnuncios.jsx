@@ -1,7 +1,7 @@
 import { useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useApp } from '../context/AppContext'
-import { Icone, BadgeStatus } from '../components/ui'
+import { Icone, BadgeStatus, Logo } from '../components/ui'
 import { categorias } from '../data/mock'
 
 const FILTROS = ['Todos', 'Ativos', 'Em negociação', 'Finalizados']
@@ -72,31 +72,31 @@ export default function MeusAnuncios() {
   return (
     <div className="min-h-screen bg-background">
       {/* Header sem links redundantes */}
-      <header className="sticky top-0 z-40 bg-white border-b border-surface-container px-4 h-16 flex items-center justify-between">
+      <header className="sticky top-0 z-40 bg-white border-b border-creme-300 px-4 h-16 flex items-center justify-between">
         <div className="flex items-center gap-md">
-          <button onClick={() => navigate(-1)} className="p-2 rounded-full hover:bg-surface-container active:scale-95">
-            <Icone nome="arrow_back" className="text-on-surface-variant" />
+          <button onClick={() => navigate(-1)} className="p-2 rounded-full hover:bg-creme-200 active:scale-95">
+            <Icone nome="arrow_back" className="text-on-surface-muted" />
           </button>
-          <span className="text-xl font-black text-primary">Meus Anúncios</span>
+          <Logo height={72}/>
         </div>
-        <button onClick={() => navigate('/notificacoes')} className="p-2 rounded-full hover:bg-surface-container active:scale-95">
-          <Icone nome="notifications" className="text-on-surface-variant" />
+        <button onClick={() => navigate('/notificacoes')} className="p-2 rounded-full hover:bg-creme-200 active:scale-95">
+          <Icone nome="notifications" className="text-on-surface-muted" />
         </button>
       </header>
 
       <div className="max-w-4xl mx-auto px-4 py-xl pb-32">
-        <p className="text-body-md text-on-surface-variant mb-xl">Gerencie suas doações e acompanhe o interesse da comunidade.</p>
+        <p className="text-body-md text-on-surface-muted mb-xl">Gerencie suas doações e acompanhe o interesse da comunidade.</p>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-md mb-xl">
           {[
             { valor: stats.ativos.toString().padStart(2,'0'),      label: 'Ativos',           cor: 'text-on-surface' },
-            { valor: stats.negociacao.toString().padStart(2,'0'),  label: 'Em negociação',    cor: 'text-secondary' },
+            { valor: stats.negociacao.toString().padStart(2,'0'),  label: 'Em negociação',    cor: 'text-coral-600' },
             { valor: stats.doados.toString().padStart(2,'0'),      label: 'Doados este mês',  cor: 'text-tertiary' },
-            { valor: stats.interessados.toString().padStart(2,'0'),label: 'Pessoas ajudadas', cor: 'text-primary' },
+            { valor: stats.interessados.toString().padStart(2,'0'),label: 'Pessoas ajudadas', cor: 'text-verde-600' },
           ].map(({ valor, label, cor }) => (
             <div key={label} className="card p-md">
               <p className={`text-h2 font-h2 ${cor}`}>{valor}</p>
-              <p className="text-label-md text-on-surface-variant">{label}</p>
+              <p className="text-label-md text-on-surface-muted">{label}</p>
             </div>
           ))}
         </div>
@@ -105,17 +105,17 @@ export default function MeusAnuncios() {
           {FILTROS.map(f => (
             <button key={f} onClick={() => setFiltroAtivo(f)}
               className={`px-lg py-sm rounded-full text-label-md font-semibold transition-all
-                ${filtroAtivo === f ? 'bg-primary text-on-primary shadow-sm' : 'bg-surface-container text-on-surface-variant hover:bg-surface-container-high'}`}>
+                ${filtroAtivo === f ? 'bg-primary text-on-primary shadow-sm' : 'bg-creme-100 text-on-surface-muted hover:bg-creme-200-high'}`}>
               {f}{f === 'Todos' ? ` (${meusItens.length})` : ''}
             </button>
           ))}
         </div>
 
         {itensFiltrados.length === 0 ? (
-          <div className="card p-xxl text-center text-on-surface-variant">
+          <div className="card p-xxl text-center text-on-surface-muted">
             <Icone nome="inventory_2" tamanho={64} className="text-surface-container-highest mb-md" />
             <p className="text-h3 font-h3">Nenhum item aqui</p>
-            <button onClick={() => navigate('/anunciar')} className="btn-secondary mt-lg">
+            <button onClick={() => navigate('/anunciar')} className="btn-verde mt-lg">
               <Icone nome="add" />Publicar doação
             </button>
           </div>
@@ -133,21 +133,21 @@ export default function MeusAnuncios() {
                       <h3 className="font-semibold text-on-surface text-body-md flex-1 min-w-0 truncate pr-sm">{item.titulo}</h3>
                       <div className="flex gap-xs flex-shrink-0">
                         <button onClick={() => abrirEdicao(item)}
-                          className="p-2 rounded-lg hover:bg-surface-container active:scale-95 transition-all"
+                          className="p-2 rounded-lg hover:bg-creme-200 active:scale-95 transition-all"
                           title="Editar">
-                          <Icone nome="edit" tamanho={18} className="text-on-surface-variant" />
+                          <Icone nome="edit" tamanho={18} className="text-on-surface-muted" />
                         </button>
                         <button onClick={() => handleExcluir(item.id)}
                           className={`p-2 rounded-lg active:scale-95 transition-all ${confirmandoExcluir === item.id ? 'bg-error-container' : 'hover:bg-error-container'}`}
                           title="Excluir">
-                          <Icone nome="delete" tamanho={18} className={confirmandoExcluir === item.id ? 'text-error' : 'text-on-surface-variant'} />
+                          <Icone nome="delete" tamanho={18} className={confirmandoExcluir === item.id ? 'text-error' : 'text-on-surface-muted'} />
                         </button>
                       </div>
                     </div>
                     {confirmandoExcluir === item.id && (
                       <p className="text-xs text-error bg-error-container px-sm py-xs rounded mt-xs">Clique novamente para confirmar exclusão</p>
                     )}
-                    <p className="text-sm text-on-surface-variant flex items-center gap-xs mt-xs">
+                    <p className="text-sm text-on-surface-muted flex items-center gap-xs mt-xs">
                       <Icone nome="calendar_today" tamanho={14} />Publicado recentemente
                     </p>
                     {item.interessados > 0 ? (
@@ -157,12 +157,12 @@ export default function MeusAnuncios() {
                             <img key={n} src={`https://i.pravatar.cc/24?img=${n}`} alt="" className="w-6 h-6 rounded-full border-2 border-white" />
                           ))}
                         </div>
-                        <span className="text-sm text-on-surface-variant">
+                        <span className="text-sm text-on-surface-muted">
                           {item.interessados} {item.interessados === 1 ? 'pessoa interessada' : 'pessoas interessadas'}
                         </span>
                       </div>
                     ) : (
-                      <span className="inline-block mt-sm text-sm text-on-surface-variant bg-surface-container px-md py-xs rounded-full italic">Nenhum interessado ainda</span>
+                      <span className="inline-block mt-sm text-sm text-on-surface-muted bg-creme-100 px-md py-xs rounded-full italic">Nenhum interessado ainda</span>
                     )}
                     {item.negociacaoInfo && (
                       <div className="mt-sm flex items-center gap-sm bg-secondary-fixed text-on-secondary-fixed-variant px-md py-sm rounded-lg">
@@ -174,7 +174,7 @@ export default function MeusAnuncios() {
                 </div>
                 {item.status !== 'doado' && (
                   <div className="px-md pb-md">
-                    <button onClick={() => marcarComoDoado(item.id)} className="btn-secondary w-full py-sm text-sm">
+                    <button onClick={() => marcarComoDoado(item.id)} className="btn-verde w-full py-sm text-sm">
                       <Icone nome="check_circle" tamanho={18} />Marcar como Doado
                     </button>
                   </div>
@@ -196,27 +196,27 @@ export default function MeusAnuncios() {
       {editandoItem && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={() => setEditandoItem(null)}>
           <div className="bg-white rounded-2xl w-full max-w-md shadow-modal overflow-hidden max-h-[90vh] flex flex-col" onClick={e => e.stopPropagation()}>
-            <div className="flex items-center justify-between p-lg border-b border-surface-container flex-shrink-0">
+            <div className="flex items-center justify-between p-lg border-b border-creme-300 flex-shrink-0">
               <h3 className="font-semibold text-on-surface text-h3">Editar anúncio</h3>
-              <button onClick={() => setEditandoItem(null)} className="p-1 rounded-full hover:bg-surface-container">
-                <Icone nome="close" className="text-on-surface-variant" />
+              <button onClick={() => setEditandoItem(null)} className="p-1 rounded-full hover:bg-creme-200">
+                <Icone nome="close" className="text-on-surface-muted" />
               </button>
             </div>
 
             <div className="p-lg space-y-md overflow-y-auto flex-1">
               {/* Troca de fotos */}
               <div>
-                <label className="block text-label-md text-on-surface-variant mb-xs">Fotos</label>
+                <label className="block text-label-md text-on-surface-muted mb-xs">Fotos</label>
                 <input ref={fotoEditRef} type="file" accept="image/*" multiple className="hidden" onChange={handleFotoEdit} />
                 <div className="grid grid-cols-4 gap-sm">
                   {editFotos.length < 4 && (
                     <button type="button" onClick={() => fotoEditRef.current?.click()}
-                      className="aspect-square rounded-lg border-2 border-dashed border-outline-variant bg-surface-container-low flex flex-col items-center justify-center hover:bg-surface-container transition-colors">
-                      <Icone nome="add_photo_alternate" tamanho={24} className="text-primary" />
+                      className="aspect-square rounded-lg border-2 border-dashed border-outline-variant bg-creme-100 flex flex-col items-center justify-center hover:bg-creme-200 transition-colors">
+                      <Icone nome="add_photo_alternate" tamanho={24} className="text-verde-600" />
                     </button>
                   )}
                   {editFotos.map((foto, i) => (
-                    <div key={i} className="aspect-square rounded-lg overflow-hidden relative border border-surface-container">
+                    <div key={i} className="aspect-square rounded-lg overflow-hidden relative border border-creme-300">
                       <img src={foto} alt="" className="w-full h-full object-cover" />
                       <button type="button" onClick={() => removerFotoEdit(i)}
                         className="absolute top-0.5 right-0.5 bg-error text-on-error rounded-full w-5 h-5 flex items-center justify-center">
@@ -229,17 +229,17 @@ export default function MeusAnuncios() {
               </div>
 
               <div>
-                <label className="block text-label-md text-on-surface-variant mb-xs">Título</label>
+                <label className="block text-label-md text-on-surface-muted mb-xs">Título</label>
                 <input className="input" value={editForm.titulo || ''} onChange={e => setEditForm(f => ({ ...f, titulo: e.target.value }))} />
               </div>
               <div>
-                <label className="block text-label-md text-on-surface-variant mb-xs">Descrição</label>
+                <label className="block text-label-md text-on-surface-muted mb-xs">Descrição</label>
                 <textarea className="input h-auto py-md" rows={3}
                   value={editForm.descricao || ''} onChange={e => setEditForm(f => ({ ...f, descricao: e.target.value }))} />
               </div>
               <div className="grid grid-cols-2 gap-md">
                 <div>
-                  <label className="block text-label-md text-on-surface-variant mb-xs">Categoria</label>
+                  <label className="block text-label-md text-on-surface-muted mb-xs">Categoria</label>
                   <div className="relative">
                     <select className="input appearance-none pr-8 py-sm text-sm"
                       value={editForm.categoria || ''} onChange={e => setEditForm(f => ({ ...f, categoria: e.target.value }))}>
@@ -247,16 +247,16 @@ export default function MeusAnuncios() {
                         <option key={c.id} value={c.id}>{c.label}</option>
                       ))}
                     </select>
-                    <Icone nome="expand_more" tamanho={18} className="absolute right-2 top-1/2 -translate-y-1/2 text-on-surface-variant pointer-events-none" />
+                    <Icone nome="expand_more" tamanho={18} className="absolute right-2 top-1/2 -translate-y-1/2 text-on-surface-muted pointer-events-none" />
                   </div>
                 </div>
                 <div>
-                  <label className="block text-label-md text-on-surface-variant mb-xs">Condição</label>
+                  <label className="block text-label-md text-on-surface-muted mb-xs">Condição</label>
                   <div className="flex flex-col gap-xs">
                     {condicoes.map(c => (
                       <button key={c} type="button" onClick={() => setEditForm(f => ({ ...f, condicao: c }))}
                         className={`px-sm py-xs rounded-lg border text-sm transition-all text-left
-                          ${editForm.condicao === c ? 'border-primary bg-primary-fixed text-on-primary-fixed-variant font-semibold' : 'border-outline-variant text-on-surface-variant hover:border-primary'}`}>
+                          ${editForm.condicao === c ? 'border-primary bg-coral-50 text-on-primary-fixed-variant font-semibold' : 'border-outline-variant text-on-surface-muted hover:border-primary'}`}>
                         {c}
                       </button>
                     ))}
@@ -265,10 +265,10 @@ export default function MeusAnuncios() {
               </div>
             </div>
 
-            <div className="flex gap-md p-lg border-t border-surface-container flex-shrink-0">
-              <button onClick={() => setEditandoItem(null)} className="btn-outline flex-1 py-sm text-sm">Cancelar</button>
+            <div className="flex gap-md p-lg border-t border-creme-300 flex-shrink-0">
+              <button onClick={() => setEditandoItem(null)} className="btn-outline-coral flex-1 py-sm text-sm">Cancelar</button>
               <button onClick={salvarEdicao} disabled={!editForm.titulo?.trim()}
-                className="btn-secondary flex-1 py-sm text-sm disabled:opacity-50">
+                className="btn-verde flex-1 py-sm text-sm disabled:opacity-50">
                 <Icone nome="check" tamanho={16} />Salvar
               </button>
             </div>

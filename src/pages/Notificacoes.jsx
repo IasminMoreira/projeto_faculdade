@@ -1,14 +1,13 @@
 import { useNavigate } from 'react-router-dom'
 import { useApp } from '../context/AppContext'
-import TopBar from '../components/layout/TopBar'
-import { Icone, Avatar } from '../components/ui'
+import { Icone, Avatar, Logo } from '../components/ui'
 import { usuarios } from '../data/mock'
 
-const coresBadge = {
-  primary:  'bg-primary-container text-on-primary-container',
-  secondary:'bg-secondary-container text-on-secondary-container',
-  tertiary: 'bg-tertiary-container text-on-tertiary-container',
-  outline:  'bg-surface-container-highest text-on-surface-variant',
+const coresIcone = {
+  primary:  'bg-verde-100 text-verde-700',
+  secondary:'bg-coral-100 text-coral-700',
+  tertiary: 'bg-coral-200 text-coral-800',
+  outline:  'bg-creme-200 text-on-surface-muted',
 }
 
 export default function Notificacoes() {
@@ -19,67 +18,48 @@ export default function Notificacoes() {
   const anteriores = notificacoes.filter(n => n.lida)
 
   return (
-    <div>
-      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-surface-container flex items-center justify-between px-4 h-16">
+    <div className="min-h-screen" style={{ background: '#fffdf9' }}>
+      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-creme-300 flex items-center justify-between px-md h-16">
         <div className="flex items-center gap-md">
-          <button onClick={() => navigate(-1)} className="p-2 rounded-full hover:bg-surface-container active:scale-95">
-            <Icone nome="arrow_back" className="text-on-surface-variant" />
+          <button onClick={() => navigate(-1)} className="p-sm rounded-xl hover:bg-creme-200 active:scale-95">
+            <Icone nome="arrow_back" className="text-on-surface-muted"/>
           </button>
-          <span className="text-xl font-black text-primary">Doa aí</span>
+          <Logo height={72}/>
         </div>
-        <div className="flex gap-1">
-          <button className="p-2 rounded-full hover:bg-surface-container">
-            <Icone nome="location_on" className="text-on-surface-variant" />
+        {recentes.length > 0 && (
+          <button onClick={marcarTodasLidas}
+            className="text-sm font-semibold text-coral-600 hover:underline px-md py-sm rounded-xl hover:bg-coral-50 transition-colors">
+            Marcar todas como lidas
           </button>
-          <button className="p-2 rounded-full hover:bg-surface-container">
-            <Icone nome="notifications" preenchido className="text-primary" />
-          </button>
-        </div>
+        )}
       </header>
 
-      <main className="max-w-2xl mx-auto px-4 py-xl pb-32">
-        {/* Título */}
-        <div className="flex items-end justify-between mb-xl">
-          <div>
-            <h1 className="text-h1 font-h1 text-on-surface">Notificações</h1>
-            <p className="text-body-md text-on-surface-variant mt-xs">
-              Acompanhe as novidades da sua rede de solidariedade.
-            </p>
-          </div>
-          {recentes.length > 0 && (
-            <button
-              onClick={marcarTodasLidas}
-              className="text-label-md text-primary hover:underline px-md py-sm rounded-full hover:bg-primary-fixed transition-colors"
-            >
-              Marcar todas como lidas
-            </button>
-          )}
+      <main className="max-w-2xl mx-auto px-md py-xl pb-32">
+        <div className="mb-xl">
+          <h1 className="text-h1 font-bold text-on-surface">Notificações</h1>
+          <p className="text-body text-on-surface-muted mt-xs">Acompanhe as novidades da sua rede.</p>
         </div>
 
-        {/* Recentes */}
         {recentes.length > 0 && (
           <section className="mb-xl">
-            <h2 className="text-h3 font-h3 mb-md flex items-center gap-sm">
-              Recentes
-              <span className="bg-primary text-on-primary text-xs px-sm py-xs rounded-full font-bold">
-                {recentes.length}
-              </span>
-            </h2>
+            <div className="flex items-center gap-sm mb-md">
+              <h2 className="text-h4 font-bold text-on-surface">Recentes</h2>
+              <span className="badge-coral">{recentes.length}</span>
+            </div>
             <div className="space-y-sm">
               {recentes.map(n => (
-                <NotificacaoCard key={n.id} notif={n} onLida={() => marcarNotificacaoLida(n.id)} />
+                <NotifCard key={n.id} n={n} onLida={() => marcarNotificacaoLida(n.id)}/>
               ))}
             </div>
           </section>
         )}
 
-        {/* Anteriores */}
         {anteriores.length > 0 && (
           <section>
-            <h2 className="text-h3 font-h3 text-on-surface-variant mb-md">Anteriores</h2>
-            <div className="space-y-sm opacity-80">
+            <h2 className="text-h4 font-bold text-on-surface-muted mb-md">Anteriores</h2>
+            <div className="space-y-sm opacity-70">
               {anteriores.map(n => (
-                <NotificacaoCard key={n.id} notif={n} lida />
+                <NotifCard key={n.id} n={n} lida/>
               ))}
             </div>
           </section>
@@ -87,8 +67,10 @@ export default function Notificacoes() {
 
         {notificacoes.length === 0 && (
           <div className="flex flex-col items-center justify-center py-xxl text-center">
-            <Icone nome="notifications_off" tamanho={64} className="text-surface-container-highest mb-md" />
-            <p className="text-h3 font-h3 text-on-surface-variant">Tudo limpo por aqui!</p>
+            <div className="w-20 h-20 bg-creme-200 rounded-2xl flex items-center justify-center mb-lg">
+              <Icone nome="notifications_off" tamanho={36} className="text-on-surface-muted"/>
+            </div>
+            <p className="text-h3 font-bold text-on-surface">Tudo em dia!</p>
           </div>
         )}
       </main>
@@ -96,69 +78,50 @@ export default function Notificacoes() {
   )
 }
 
-function NotificacaoCard({ notif, lida = false, onLida }) {
+function NotifCard({ n, lida = false, onLida }) {
   const navigate = useNavigate()
-  const corIcone = coresBadge[notif.cor] || coresBadge.outline
-  const usuario = notif.avatarId ? usuarios.find(u => u.id === notif.avatarId) : null
+  const cor = coresIcone[n.cor] || coresIcone.outline
+  const u = n.avatarId ? usuarios.find(x => x.id === n.avatarId) : null
 
   return (
-    <div
-      onClick={onLida}
-      className={`p-md rounded-xl border flex gap-md items-start cursor-pointer transition-shadow hover:shadow-card
-        ${lida
-          ? 'bg-surface-container-lowest border-surface-container'
-          : 'bg-primary-fixed/10 border-primary-fixed-dim/50 shadow-sm'
-        }`}
-    >
-      {/* Ícone ou avatar */}
-      {usuario ? (
+    <div onClick={onLida}
+      className={`rounded-xl border-2 flex gap-md items-start p-md cursor-pointer transition-all hover:shadow-soft active:scale-[0.99]
+        ${lida ? 'bg-white border-creme-200' : 'bg-coral-50 border-coral-200'}`}>
+      {u ? (
         <div className="relative flex-shrink-0">
-          <Avatar src={usuario.avatar} nome={usuario.nome} tamanho={48} />
-          <div className={`absolute -bottom-1 -right-1 p-xs rounded-full border-2 border-white ${corIcone}`}>
-            <Icone nome={notif.icone} tamanho={14} preenchido />
+          <Avatar src={u.avatar} nome={u.nome} tamanho={48}/>
+          <div className={`absolute -bottom-1 -right-1 p-xs rounded-pill border-2 border-white ${cor}`}>
+            <Icone nome={n.icone} tamanho={12} preenchido/>
           </div>
         </div>
       ) : (
-        <div className={`p-sm rounded-full flex-shrink-0 ${corIcone}`}>
-          <Icone nome={notif.icone} tamanho={22} />
+        <div className={`p-sm rounded-xl flex-shrink-0 ${cor}`}>
+          <Icone nome={n.icone} tamanho={22}/>
         </div>
       )}
-
-      {/* Conteúdo */}
       <div className="flex-1 min-w-0">
         <div className="flex justify-between items-start mb-xs">
-          <span className={`text-label-md font-bold ${lida ? 'text-on-surface-variant' : `text-${notif.cor}`}`}>
-            {notif.titulo}
+          <span className={`text-label font-bold uppercase tracking-wider ${lida ? 'text-on-surface-muted' : 'text-coral-700'}`}>
+            {n.titulo}
           </span>
-          <span className="text-xs text-on-surface-variant flex-shrink-0 ml-sm">{notif.tempo}</span>
+          <span className="text-xs text-on-surface-muted flex-shrink-0 ml-sm">{n.tempo}</span>
         </div>
-        <p className="text-body-md text-on-surface"
-          dangerouslySetInnerHTML={{ __html: notif.mensagem.replace(/"([^"]+)"/g, '<strong>"$1"</strong>') }}
-        />
-
-        {/* Ações */}
-        {notif.acoes && (
+        <p className="text-sm text-on-surface"
+          dangerouslySetInnerHTML={{ __html: n.mensagem.replace(/"([^"]+)"/g, '<strong>"$1"</strong>') }}/>
+        {n.acoes && (
           <div className="flex gap-sm mt-sm">
-            <button
-              onClick={e => { e.stopPropagation(); navigate('/perfil') }}
-              className="bg-primary text-on-primary text-sm font-semibold px-md py-xs rounded-lg hover:brightness-110 active:scale-95 transition-all"
-            >
+            <button onClick={e => { e.stopPropagation(); navigate('/perfil') }}
+              className="bg-verde-600 text-white text-xs font-bold px-md py-xs rounded-pill hover:brightness-110 active:scale-95">
               Ver Perfil
             </button>
-            <button
-              onClick={e => { e.stopPropagation(); navigate('/mensagens') }}
-              className="bg-surface-container-lowest border border-outline text-on-surface text-sm font-semibold px-md py-xs rounded-lg hover:bg-surface-container transition-all active:scale-95"
-            >
+            <button onClick={e => { e.stopPropagation(); navigate('/mensagens') }}
+              className="border-2 border-creme-300 text-on-surface text-xs font-bold px-md py-xs rounded-pill hover:bg-creme-100 active:scale-95">
               Responder
             </button>
           </div>
         )}
       </div>
-
-      {/* Indicador não lida */}
-      {!lida && (
-        <div className="w-2 h-2 bg-primary rounded-full flex-shrink-0 mt-1" />
-      )}
+      {!lida && <div className="w-2.5 h-2.5 bg-coral-500 rounded-pill flex-shrink-0 mt-sm"/>}
     </div>
   )
 }

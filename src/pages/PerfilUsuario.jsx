@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from 'react-router-dom'
 import { useApp } from '../context/AppContext'
-import { Avatar, Icone } from '../components/ui'
+import { Avatar, Icone, Logo } from '../components/ui'
 import { usuarios, itens } from '../data/mock'
 
 export default function PerfilUsuario() {
@@ -11,8 +11,8 @@ export default function PerfilUsuario() {
   const perfil = usuarios.find(u => u.id === id)
   if (!perfil) return (
     <div className="flex flex-col items-center justify-center min-h-screen gap-md">
-      <p className="text-on-surface-variant">Usuário não encontrado.</p>
-      <button onClick={() => navigate(-1)} className="btn-secondary">Voltar</button>
+      <p className="text-on-surface-muted">Usuário não encontrado.</p>
+      <button onClick={() => navigate(-1)} className="btn-verde">Voltar</button>
     </div>
   )
 
@@ -39,17 +39,17 @@ export default function PerfilUsuario() {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-surface-container flex items-center justify-between px-4 h-16 flex-shrink-0">
-        <button onClick={() => navigate(-1)} className="p-2 rounded-full hover:bg-surface-container active:scale-95">
-          <Icone nome="arrow_back" className="text-on-surface-variant" />
+      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-creme-300 flex items-center justify-between px-4 h-16 flex-shrink-0">
+        <button onClick={() => navigate(-1)} className="p-2 rounded-full hover:bg-creme-200 active:scale-95">
+          <Icone nome="arrow_back" className="text-on-surface-muted" />
         </button>
-        <span className="text-xl font-black text-primary">Doa aí</span>
+        <Logo height={72}/>
         <div className="flex gap-1">
-          <button onClick={handleCompartilhar} className="p-2 rounded-full hover:bg-surface-container active:scale-95">
-            <Icone nome="share" className="text-on-surface-variant" />
+          <button onClick={handleCompartilhar} className="p-2 rounded-full hover:bg-creme-200 active:scale-95">
+            <Icone nome="share" className="text-on-surface-muted" />
           </button>
-          <button onClick={() => navigate('/notificacoes')} className="p-2 rounded-full hover:bg-surface-container active:scale-95">
-            <Icone nome="notifications" className="text-on-surface-variant" />
+          <button onClick={() => navigate('/notificacoes')} className="p-2 rounded-full hover:bg-creme-200 active:scale-95">
+            <Icone nome="notifications" className="text-on-surface-muted" />
           </button>
         </div>
       </header>
@@ -62,17 +62,17 @@ export default function PerfilUsuario() {
               <Avatar src={perfil.avatar} nome={perfil.nome} tamanho={96} />
             </div>
             <h1 className="text-h2 font-h2 text-on-surface mb-xs">{perfil.nome}</h1>
-            <p className="text-on-surface-variant flex items-center justify-center gap-xs mb-md">
+            <p className="text-on-surface-muted flex items-center justify-center gap-xs mb-md">
               <Icone nome="location_on" tamanho={16} />{perfil.cidade}
             </p>
             <div className="flex items-center justify-center gap-xs mb-lg">
               <Icone nome="star" tamanho={18} preenchido className="text-tertiary" />
               <span className="font-bold text-on-surface">{perfil.avaliacao}</span>
-              <span className="text-on-surface-variant text-sm">• Avaliação média</span>
+              <span className="text-on-surface-muted text-sm">• Avaliação média</span>
             </div>
             {/* Só mostra o botão se não for o próprio usuário */}
             {id !== usuario.id && (
-              <button onClick={iniciarConversa} className="btn-primary w-full">
+              <button onClick={iniciarConversa} className="btn-coral w-full">
                 <Icone nome="chat_bubble" />Enviar mensagem
               </button>
             )}
@@ -81,14 +81,14 @@ export default function PerfilUsuario() {
           {/* Stats */}
           <div className="grid grid-cols-3 gap-md mb-xl">
             {[
-              { valor: perfil.totalDoacoes || 12, label: 'Doações', icone: 'volunteer_activism', cor: 'text-primary' },
-              { valor: perfil.itensRecebidos || 5, label: 'Recebidos', icone: 'archive', cor: 'text-secondary' },
+              { valor: perfil.totalDoacoes || 12, label: 'Doações', icone: 'volunteer_activism', cor: 'text-verde-600' },
+              { valor: perfil.itensRecebidos || 5, label: 'Recebidos', icone: 'archive', cor: 'text-coral-600' },
               { valor: `${perfil.anosNaPlataforma || 2}a`, label: 'Na plataforma', icone: 'calendar_month', cor: 'text-tertiary' },
             ].map(({ valor, label, icone, cor }) => (
               <div key={label} className="card p-md text-center">
                 <Icone nome={icone} tamanho={24} className={`${cor} mb-xs`} />
                 <p className={`text-h3 font-h3 ${cor}`}>{valor}</p>
-                <p className="text-[11px] font-semibold uppercase tracking-wider text-on-surface-variant">{label}</p>
+                <p className="text-[11px] font-semibold uppercase tracking-wider text-on-surface-muted">{label}</p>
               </div>
             ))}
           </div>
@@ -98,7 +98,7 @@ export default function PerfilUsuario() {
             {itensDoUsuario.length > 0 ? 'Itens disponíveis' : 'Nenhum item disponível'}
           </h2>
           {itensDoUsuario.length === 0 ? (
-            <div className="card p-xl text-center text-on-surface-variant">
+            <div className="card p-xl text-center text-on-surface-muted">
               <Icone nome="inventory_2" tamanho={48} className="text-surface-container-highest mb-sm" />
               <p>Este usuário não tem itens disponíveis no momento.</p>
             </div>
@@ -110,13 +110,13 @@ export default function PerfilUsuario() {
                   <img src={item.fotos[0]} alt={item.titulo} className="w-28 h-28 object-cover flex-shrink-0" />
                   <div className="p-md flex-1 min-w-0">
                     <h3 className="font-semibold text-on-surface mb-xs truncate">{item.titulo}</h3>
-                    <p className="text-sm text-on-surface-variant line-clamp-2 mb-sm">{item.descricao}</p>
+                    <p className="text-sm text-on-surface-muted line-clamp-2 mb-sm">{item.descricao}</p>
                     <div className="flex items-center gap-sm">
-                      <span className="chip bg-primary-fixed text-on-primary-fixed-variant capitalize text-xs">{item.categoria}</span>
-                      <span className="text-xs text-on-surface-variant">{item.condicao}</span>
+                      <span className="chip bg-coral-50 text-on-primary-fixed-variant capitalize text-xs">{item.categoria}</span>
+                      <span className="text-xs text-on-surface-muted">{item.condicao}</span>
                     </div>
                     {item.distancia && item.distancia !== '0km' && (
-                      <p className="text-xs text-primary mt-xs flex items-center gap-xs">
+                      <p className="text-xs text-verde-600 mt-xs flex items-center gap-xs">
                         <Icone nome="location_on" tamanho={12} />{item.distancia} de você
                       </p>
                     )}

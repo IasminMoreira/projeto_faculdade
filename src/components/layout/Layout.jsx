@@ -3,11 +3,11 @@ import BottomNav from './BottomNav'
 
 export default function Layout() {
   return (
-    <div className="min-h-screen bg-background flex flex-col">
-      <main className="flex-1 pb-24">
-        <Outlet />
+    <div style={{ minHeight:'100vh', background:'var(--creme)' }}>
+      <main style={{ paddingBottom: 80 }}>
+        <Outlet/>
       </main>
-      <BottomNav />
+      <BottomNav/>
     </div>
   )
 }

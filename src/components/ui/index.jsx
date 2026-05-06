@@ -1,151 +1,129 @@
-// ─── Ícone Material ──────────────────────────────────────────────────────────
+import logoImg from '../../assets/logo.png'
+
+// ── Ícone Material ──────────────────────────────────────────────────────────
 export function Icone({ nome, preenchido = false, tamanho = 24, className = '' }) {
   return (
-    <span
-      className={`material-symbols-outlined ${className}`}
+    <span className={`material-symbols-outlined ${className}`}
       style={{
         fontSize: tamanho,
         fontVariationSettings: preenchido
           ? "'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24"
           : "'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24",
-      }}
-    >
+      }}>
       {nome}
     </span>
   )
 }
 
-// ─── Botão ────────────────────────────────────────────────────────────────────
-export function Botao({ children, variante = 'primary', className = '', ...props }) {
-  const estilos = {
-    primary:   'bg-tertiary text-on-tertiary hover:brightness-110',
-    secondary: 'bg-primary text-on-primary hover:bg-surface-tint',
-    outline:   'border border-primary text-primary hover:bg-primary-fixed/20',
-    ghost:     'text-primary hover:bg-primary-fixed/20',
-  }
+// ── Logo (imagem real) ────────────────────────────────────────────────────────
+export function Logo({ height = 40, className = '' }) {
   return (
-    <button
-      className={`flex items-center justify-center gap-sm font-semibold py-md px-xl rounded-full
-                  active:scale-95 transition-all duration-150 shadow-sm
-                  ${estilos[variante]} ${className}`}
-      {...props}
-    >
-      {children}
-    </button>
+    <img src={logoImg} alt="Doa aí" height={height}
+      style={{ height, width: 'auto', objectFit: 'contain' }}
+      className={className}/>
   )
 }
 
-// ─── Chip de categoria ────────────────────────────────────────────────────────
-export function ChipCategoria({ label, ativo = false, onClick }) {
-  return (
-    <button
-      onClick={onClick}
-      className={`px-md py-xs rounded-full text-label-md font-semibold transition-all whitespace-nowrap
-        ${ativo
-          ? 'bg-primary text-on-primary shadow-sm'
-          : 'bg-surface-container text-on-surface-variant hover:bg-surface-container-high'
-        }`}
-    >
-      {label}
-    </button>
-  )
-}
-
-// ─── Badge de status ──────────────────────────────────────────────────────────
-export function BadgeStatus({ status }) {
-  const config = {
-    ativo:          { label: 'Ativo',          cor: 'bg-primary-fixed text-on-primary-fixed-variant' },
-    'em-negociacao':{ label: 'Em negociação',  cor: 'bg-secondary-fixed text-on-secondary-fixed-variant' },
-    doado:          { label: 'Doado',          cor: 'bg-surface-container-highest text-on-surface-variant' },
-  }
-  const c = config[status] || config.ativo
-  return (
-    <span className={`text-[11px] font-bold uppercase tracking-wider px-sm py-xs rounded ${c.cor}`}>
-      {c.label}
-    </span>
-  )
-}
-
-// ─── Avatar ───────────────────────────────────────────────────────────────────
+// ── Avatar ───────────────────────────────────────────────────────────────────
 export function Avatar({ src, nome, tamanho = 40 }) {
   return (
     <img
-      src={src || `https://ui-avatars.com/api/?name=${encodeURIComponent(nome || 'U')}&background=b1f0ce&color=0f5238`}
+      src={src || `https://ui-avatars.com/api/?name=${encodeURIComponent(nome || 'U')}&background=ffc9b8&color=a04030`}
       alt={nome}
-      className="rounded-full object-cover border-2 border-primary-fixed"
-      style={{ width: tamanho, height: tamanho }}
+      style={{ width: tamanho, height: tamanho, flexShrink: 0, borderRadius: '9999px', objectFit: 'cover', border: '2px solid #f0dfd0' }}
     />
   )
 }
 
-// ─── Card de item ─────────────────────────────────────────────────────────────
+// ── Badge de status ───────────────────────────────────────────────────────────
+export function BadgeStatus({ status }) {
+  const config = {
+    'ativo':         { label: 'Ativo',         cls: 'badge-verde' },
+    'em-negociacao': { label: 'Em negociação', cls: 'badge-coral' },
+    'doado':         { label: 'Doado',         cls: 'chip-neutral' },
+  }
+  const c = config[status] || config['ativo']
+  return <span className={c.cls}>{c.label}</span>
+}
+
+// ── Card de item ──────────────────────────────────────────────────────────────
 export function CardItem({ item, usuario, onClick }) {
   return (
-    <div
-      onClick={onClick}
-      className="card cursor-pointer hover:shadow-modal transition-shadow duration-200 overflow-hidden"
-    >
-      <div className="relative">
-        <img
-          src={item.fotos[0]}
-          alt={item.titulo}
-          className="w-full h-48 object-cover"
+    <div onClick={onClick} className="card-hover overflow-hidden"
+      style={{ display: 'flex', flexDirection: 'column' }}>
+      <div style={{ position: 'relative', overflow: 'hidden' }}>
+        <img src={item.fotos[0]} alt={item.titulo}
+          style={{ width: '100%', height: 192, objectFit: 'cover', display: 'block', transition: 'transform 0.3s ease' }}
+          onMouseEnter={e => e.target.style.transform = 'scale(1.05)'}
+          onMouseLeave={e => e.target.style.transform = 'scale(1)'}
         />
         {item.distancia && item.distancia !== '0km' && (
-          <span className="absolute top-2 right-2 bg-inverse-surface/80 text-inverse-on-surface text-xs font-semibold px-sm py-xs rounded-full flex items-center gap-1">
-            <Icone nome="location_on" tamanho={12} />
+          <span style={{
+            position: 'absolute', top: 8, right: 8,
+            background: 'rgba(0,0,0,0.6)', color: 'white',
+            fontSize: 12, fontWeight: 600, padding: '3px 10px',
+            borderRadius: 9999, display: 'flex', alignItems: 'center', gap: 3,
+            backdropFilter: 'blur(4px)',
+          }}>
+            <Icone nome="location_on" tamanho={13}/>
             {item.distancia}
           </span>
         )}
       </div>
-      <div className="p-md">
-        <h3 className="font-semibold text-on-surface text-body-md leading-snug mb-xs">{item.titulo}</h3>
-        <p className="text-on-surface-variant text-sm line-clamp-1 mb-sm">{item.descricao}</p>
-        <div className="flex items-center justify-between">
+      <div style={{ padding: 14, flex: 1, display: 'flex', flexDirection: 'column', gap: 6 }}>
+        <h3 style={{ fontWeight: 700, fontSize: 14, color: 'var(--text)', margin: 0,
+          overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>
+          {item.titulo}
+        </h3>
+        <p style={{ fontSize: 13, color: 'var(--text-muted)', margin: 0,
+          overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 1, WebkitBoxOrient: 'vertical' }}>
+          {item.descricao}
+        </p>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 'auto' }}>
           {usuario && (
-            <div className="flex items-center gap-xs">
-              <Avatar src={usuario.avatar} nome={usuario.nome} tamanho={24} />
-              <span className="text-xs text-on-surface-variant">{usuario.nome.split(' ')[0]} {usuario.nome.split(' ')[1]?.[0]}.</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+              <Avatar src={usuario.avatar} nome={usuario.nome} tamanho={22}/>
+              <span style={{ fontSize: 12, color: 'var(--text-muted)', maxWidth: 70,
+                overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                {usuario.nome.split(' ')[0]}
+              </span>
             </div>
           )}
-          <span className="chip bg-surface-container text-on-surface-variant text-xs uppercase tracking-wide">
-            {item.categoria}
-          </span>
+          <span className="chip-coral" style={{ textTransform: 'capitalize' }}>{item.categoria}</span>
         </div>
       </div>
     </div>
   )
 }
 
-// ─── Estrelas de avaliação ────────────────────────────────────────────────────
+// ── Estrelas ─────────────────────────────────────────────────────────────────
 export function Estrelas({ valor, onChange, tamanho = 32 }) {
   return (
-    <div className="flex gap-1">
-      {[1, 2, 3, 4, 5].map(n => (
-        <button
-          key={n}
-          onClick={() => onChange?.(n)}
-          className="transition-transform hover:scale-110 active:scale-95"
-        >
-          <Icone
-            nome="star"
-            preenchido={n <= valor}
-            tamanho={tamanho}
-            className={n <= valor ? 'text-tertiary' : 'text-outline'}
-          />
+    <div style={{ display: 'flex', gap: 4 }}>
+      {[1,2,3,4,5].map(n => (
+        <button key={n} onClick={() => onChange?.(n)}
+          style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 2,
+            transition: 'transform 0.1s', fontSize: tamanho }}>
+          <Icone nome="star" preenchido={n <= valor} tamanho={tamanho}
+            className={n <= valor ? '' : ''}
+            style={{ color: n <= valor ? 'var(--coral)' : '#e5cfc0' }}/>
         </button>
       ))}
     </div>
   )
 }
 
-// ─── Empty state ──────────────────────────────────────────────────────────────
+// ── Empty state ───────────────────────────────────────────────────────────────
 export function EstadoVazio({ icone, titulo, descricao, acao }) {
   return (
-    <div className="flex flex-col items-center justify-center py-xxl text-center px-xl">
-      <Icone nome={icone} tamanho={64} className="text-surface-container-highest mb-lg" />
-      <h3 className="text-h3 font-h3 text-on-surface-variant mb-sm">{titulo}</h3>
-      {descricao && <p className="text-body-md text-outline mb-lg">{descricao}</p>}
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center',
+      justifyContent: 'center', padding: '48px 32px', textAlign: 'center' }}>
+      <div style={{ width: 72, height: 72, background: '#f8ece0', borderRadius: 20,
+        display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 20 }}>
+        <Icone nome={icone} tamanho={34} style={{ color: 'var(--text-muted)' }}/>
+      </div>
+      <h3 style={{ fontSize: 20, fontWeight: 700, color: 'var(--text)', margin: '0 0 8px' }}>{titulo}</h3>
+      {descricao && <p style={{ fontSize: 15, color: 'var(--text-muted)', margin: '0 0 20px', maxWidth: 260 }}>{descricao}</p>}
       {acao}
     </div>
   )

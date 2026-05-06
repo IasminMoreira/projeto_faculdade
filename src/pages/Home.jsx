@@ -1,12 +1,52 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useApp } from '../context/AppContext'
-import { CardItem, Icone } from '../components/ui'
+import { CardItem, Icone, Logo } from '../components/ui'
 import { categorias, usuarios } from '../data/mock'
 
-// Remove acentos para busca sem acento funcionar
 function normalizar(str) {
-  return str.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
+  return str.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase()
+}
+
+const S = {
+  header: {
+    position:'sticky', top:0, zIndex:40,
+    background:'rgba(255,253,249,0.97)', backdropFilter:'blur(12px)',
+    borderBottom:'1.5px solid #e5cfc0',
+  },
+  headerInner: {
+    display:'flex', alignItems:'center', gap:12,
+    padding:'0 16px', height:72, maxWidth:960, margin:'0 auto',
+  },
+  searchBox: {
+    display:'flex', alignItems:'center', gap:8,
+    background:'#fdf6ed', border:'2px solid #e5cfc0',
+    borderRadius:9999, padding:'8px 16px', flex:1,
+    transition:'border-color 0.15s, box-shadow 0.15s',
+  },
+  iconBtn: {
+    background:'none', border:'none', cursor:'pointer',
+    padding:8, borderRadius:12, display:'flex',
+    color:'var(--text-muted)', transition:'background 0.15s',
+  },
+  hero: {
+    background:'linear-gradient(135deg, #2a9470 0%, #154d3c 100%)',
+    borderRadius:24, padding:'28px 28px', marginBottom:24,
+    position:'relative', overflow:'hidden',
+  },
+  catBtn: (ativo) => ({
+    width:56, height:56, borderRadius:16,
+    display:'flex', alignItems:'center', justifyContent:'center',
+    border: ativo ? 'none' : '2px solid #e5cfc0',
+    background: ativo ? 'var(--coral)' : 'white',
+    color: ativo ? 'white' : 'var(--text-muted)',
+    cursor:'pointer', transition:'all 0.15s ease',
+    boxShadow: ativo ? '0 4px 12px rgba(196,103,78,0.3)' : 'none',
+  }),
+  grid: {
+    display:'grid', gap:16,
+    gridTemplateColumns:'repeat(auto-fill, minmax(200px, 1fr))',
+  },
 }
 
 export default function Home() {
@@ -14,8 +54,55 @@ export default function Home() {
   const { itens, notificacoesNaoLidas } = useApp()
   const [categoriaAtiva, setCategoriaAtiva] = useState('todos')
   const [busca, setBusca] = useState('')
-  const [modalLocalizacao, setModalLocalizacao] = useState(false)
-  const [modalMapa, setModalMapa] = useState(false)
+  const [modalLocal, setModalLocal] = useState(false)
+  const [searchFocused, setSearchFocused] = useState(false)
+  const [localizacao, setLocalizacao] = useState('São Paulo, SP — Pinheiros')
+  const [buscandoGps, setBuscandoGps] = useState(false)
+  const [enderecoManual, setEnderecoManual] = useState('')
+  const [modoManual, setModoManual] = useState(false)
+
+  function usarGps() {
+    if (!navigator.geolocation) {
+      alert('Seu navegador não suporta geolocalização.')
+      return
+    }
+    setBuscandoGps(true)
+    navigator.geolocation.getCurrentPosition(
+      pos => {
+        const { latitude, longitude } = pos.coords
+        fetch(`https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json&accept-language=pt`)
+          .then(r => r.json())
+          .then(data => {
+            const bairro = data.address?.suburb || data.address?.neighbourhood || data.address?.city_district || ''
+            const cidade = data.address?.city || data.address?.town || 'São Paulo'
+            const estado = data.address?.state_code || 'SP'
+            setLocalizacao(`${cidade}, ${estado}${bairro ? ' — ' + bairro : ''}`)
+            setModalLocal(false)
+            setBuscandoGps(false)
+            setModoManual(false)
+          })
+          .catch(() => {
+            setLocalizacao('Localização atual detectada')
+            setModalLocal(false)
+            setBuscandoGps(false)
+          })
+      },
+      () => {
+        setBuscandoGps(false)
+        alert('Não foi possível obter sua localização. Verifique as permissões do navegador.')
+      },
+      { timeout: 10000 }
+    )
+  }
+
+  function salvarEnderecoManual() {
+    if (enderecoManual.trim()) {
+      setLocalizacao(enderecoManual.trim())
+      setModalLocal(false)
+      setModoManual(false)
+      setEnderecoManual('')
+    }
+  }
 
   const itensFiltrados = itens.filter(i => {
     if (i.status !== 'ativo') return false
@@ -27,163 +114,225 @@ export default function Home() {
     return true
   })
 
-  function getUsuario(id) { return usuarios.find(u => u.id === id) }
-
-  function handleLocalizacao() {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        pos => setModalLocalizacao(true),
-        () => setModalLocalizacao(true)
-      )
-    } else {
-      setModalLocalizacao(true)
-    }
-  }
-
   return (
-    <div>
+    <div style={{ minHeight:'100vh', background:'var(--creme)' }}>
       {/* Header */}
-      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-surface-container shadow-sm">
-        <div className="flex items-center gap-3 px-4 h-16 max-w-5xl mx-auto">
-          <span className="text-2xl font-black text-primary tracking-tight cursor-pointer" onClick={() => navigate('/')}>Doa aí</span>
-          <div className="flex-1 mx-2">
-            <div className="flex items-center gap-2 bg-surface-container-low rounded-full px-4 py-2">
-              <Icone nome="search" tamanho={20} className="text-outline" />
+      <header style={S.header}>
+        <div style={S.headerInner}>
+          <Logo height={72}/>
+          <div style={{ flex:1, position:'relative' }}>
+            <div style={{
+              ...S.searchBox,
+              borderColor: searchFocused ? 'var(--coral)' : '#e5cfc0',
+              boxShadow: searchFocused ? '0 0 0 3px rgba(196,103,78,0.15)' : 'none',
+            }}>
+              <Icone nome="search" tamanho={18} style={{ color:'var(--text-muted)', flexShrink:0 }}/>
               <input
-                className="flex-1 bg-transparent outline-none text-body-md text-on-surface placeholder:text-outline"
+                style={{ flex:1, background:'transparent', border:'none', outline:'none',
+                  fontSize:15, color:'var(--text)', fontFamily:'inherit' }}
                 placeholder="Buscar doações..."
                 value={busca}
                 onChange={e => setBusca(e.target.value)}
+                onFocus={() => setSearchFocused(true)}
+                onBlur={() => setSearchFocused(false)}
               />
               {busca && (
-                <button onClick={() => setBusca('')} className="active:scale-95">
-                  <Icone nome="close" tamanho={18} className="text-outline" />
+                <button onClick={() => setBusca('')} style={S.iconBtn}>
+                  <Icone nome="close" tamanho={16}/>
                 </button>
               )}
             </div>
           </div>
-          <button
-            onClick={handleLocalizacao}
-            className="p-2 rounded-full hover:bg-surface-container transition-colors active:scale-95"
-            title="Minha localização">
-            <Icone nome="location_on" className="text-on-surface-variant" />
+          <button onClick={() => setModalLocal(true)} style={S.iconBtn}>
+            <Icone nome="location_on" style={{ color:'var(--verde)' }}/>
           </button>
-          <button
-            onClick={() => navigate('/notificacoes')}
-            className="p-2 rounded-full hover:bg-surface-container transition-colors active:scale-95 relative"
-            title="Notificações">
-            <Icone nome="notifications" className="text-on-surface-variant" />
+          <button onClick={() => navigate('/notificacoes')}
+            style={{ ...S.iconBtn, position:'relative' }}>
+            <Icone nome="notifications"/>
             {notificacoesNaoLidas > 0 && (
-              <span className="absolute top-1 right-1 w-2 h-2 bg-tertiary rounded-full" />
+              <span style={{ position:'absolute', top:6, right:6,
+                width:10, height:10, background:'var(--coral)',
+                borderRadius:'50%', border:'2px solid white' }}/>
             )}
           </button>
         </div>
       </header>
 
-      <div className="max-w-5xl mx-auto px-4 py-lg">
+      <div style={{ maxWidth:960, margin:'0 auto', padding:'20px 16px 100px' }}>
+
+        {/* Hero */}
+        {!busca && categoriaAtiva === 'todos' && (
+          <div style={S.hero}>
+            {/* decoração */}
+            <div style={{ position:'absolute', top:-40, right:-40, width:180, height:180,
+              borderRadius:'50%', background:'rgba(255,255,255,0.08)' }}/>
+            <div style={{ position:'absolute', bottom:-30, left:'40%', width:120, height:120,
+              borderRadius:'50%', background:'rgba(232,93,62,0.2)' }}/>
+            <div style={{ position:'relative', zIndex:1, display:'flex', alignItems:'center', justifyContent:'space-between', gap:16 }}>
+              <div>
+                <span style={{ display:'inline-flex', alignItems:'center', gap:6, padding:'4px 14px',
+                  background:'rgba(255,255,255,0.18)', color:'white', borderRadius:9999,
+                  fontSize:11, fontWeight:700, letterSpacing:'0.06em', textTransform:'uppercase', marginBottom:14 }}>
+                  <Icone nome="volunteer_activism" tamanho={14}/>Comunidade ativa
+                </span>
+                <h2 style={{ fontSize:22, fontWeight:800, color:'white', margin:'0 0 12px', lineHeight:1.25, maxWidth:260 }}>
+                  Doe o que não usa.<br/>Receba o que precisa.
+                </h2>
+                <button onClick={() => navigate('/anunciar')}
+                  style={{ background:'var(--coral)', color:'white', border:'none',
+                    padding:'10px 20px', borderRadius:9999, fontWeight:700, fontSize:14,
+                    cursor:'pointer', display:'inline-flex', alignItems:'center', gap:8,
+                    boxShadow:'0 4px 12px rgba(196,103,78,0.4)', transition:'all 0.15s' }}>
+                  Publicar doação
+                  <Icone nome="arrow_forward" tamanho={18}/>
+                </button>
+              </div>
+              <div style={{ display:'flex', flexDirection:'column', gap:10, flexShrink:0 }}>
+                {[['25k+','Itens doados'],['10k+','Doadores'],['4.9★','Avaliação']].map(([n,l]) => (
+                  <div key={l} style={{ background:'rgba(255,255,255,0.15)', borderRadius:14,
+                    padding:'8px 16px', textAlign:'center', minWidth:100 }}>
+                    <div style={{ color:'white', fontWeight:800, fontSize:16 }}>{n}</div>
+                    <div style={{ color:'rgba(255,255,255,0.7)', fontSize:12 }}>{l}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Categorias */}
-        <div className="flex gap-sm overflow-x-auto pb-sm scrollbar-none mb-lg">
+        <div style={{ display:'flex', gap:12, overflowX:'auto', paddingBottom:8, marginBottom:24, scrollbarWidth:'none' }}>
           {categorias.map(cat => (
-            <div key={cat.id} className="flex flex-col items-center gap-xs flex-shrink-0">
-              <button
-                onClick={() => setCategoriaAtiva(cat.id)}
-                className={`w-14 h-14 rounded-xl flex items-center justify-center transition-all active:scale-90
-                  ${categoriaAtiva === cat.id
-                    ? 'bg-primary text-on-primary shadow-sm'
-                    : 'bg-surface-container-lowest border border-surface-container-high text-on-surface-variant hover:bg-surface-container'
-                  }`}>
-                <Icone nome={cat.icone} tamanho={26} />
+            <div key={cat.id} style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:6, flexShrink:0 }}>
+              <button onClick={() => setCategoriaAtiva(cat.id)} style={S.catBtn(categoriaAtiva === cat.id)}>
+                <Icone nome={cat.icone} tamanho={26}/>
               </button>
-              <span className={`text-[11px] font-semibold ${categoriaAtiva === cat.id ? 'text-primary' : 'text-on-surface-variant'}`}>
+              <span style={{ fontSize:11, fontWeight:600,
+                color: categoriaAtiva === cat.id ? 'var(--coral)' : 'var(--text-muted)' }}>
                 {cat.label}
               </span>
             </div>
           ))}
         </div>
 
-        {/* Cabeçalho */}
-        <div className="flex items-center justify-between mb-md">
-          <h2 className="text-h3 font-h3 text-on-surface">
-            {busca ? `Resultados para "${busca}"` : 'Próximo de você'}
-          </h2>
-          <button
-            onClick={() => setModalMapa(true)}
-            className="flex items-center gap-xs text-secondary text-label-md hover:underline active:scale-95">
-            Ver mapa
-            <Icone nome="map" tamanho={18} />
+        {/* Título */}
+        <div style={{ display:'flex', alignItems:'flex-end', justifyContent:'space-between', marginBottom:16 }}>
+          <div>
+            <h2 style={{ fontSize:20, fontWeight:800, color:'var(--text)', margin:0 }}>
+              {busca ? `Resultados para "${busca}"` : 'Próximo de você'}
+            </h2>
+            <p style={{ fontSize:13, color:'var(--text-muted)', margin:'2px 0 0' }}>
+              {itensFiltrados.length} itens disponíveis
+            </p>
+          </div>
+          <button style={{ background:'none', border:'none', cursor:'pointer',
+            display:'flex', alignItems:'center', gap:4,
+            color:'var(--verde)', fontWeight:600, fontSize:13 }}>
+            Ver mapa<Icone nome="map" tamanho={16}/>
           </button>
         </div>
 
         {/* Grid */}
         {itensFiltrados.length === 0 ? (
-          <div className="text-center py-xxl text-on-surface-variant">
-            <Icone nome="search_off" tamanho={64} className="text-surface-container-highest mb-md" />
-            <p className="text-h3 font-h3">Nenhum item encontrado</p>
-            <p className="text-body-md mt-xs">Tente outra busca ou categoria</p>
+          <div style={{ textAlign:'center', padding:'64px 0' }}>
+            <div style={{ width:72, height:72, background:'#f8ece0', borderRadius:20,
+              display:'flex', alignItems:'center', justifyContent:'center', margin:'0 auto 20px' }}>
+              <Icone nome="search_off" tamanho={34} style={{ color:'var(--text-muted)' }}/>
+            </div>
+            <p style={{ fontSize:20, fontWeight:700, color:'var(--text)', margin:0 }}>Nenhum item encontrado</p>
+            <p style={{ fontSize:14, color:'var(--text-muted)', marginTop:6 }}>Tente outra busca ou categoria</p>
           </div>
         ) : (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-md">
+          <div style={S.grid}>
             {itensFiltrados.map(item => (
-              <CardItem
-                key={item.id}
-                item={item}
-                usuario={getUsuario(item.doadorId)}
-                onClick={() => navigate(`/item/${item.id}`)}
-              />
+              <CardItem key={item.id} item={item}
+                usuario={usuarios.find(u => u.id === item.doadorId)}
+                onClick={() => navigate(`/item/${item.id}`)}/>
             ))}
           </div>
         )}
       </div>
 
-      {/* Modal Localização */}
-      {modalLocalizacao && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-end md:items-center justify-center p-4" onClick={() => setModalLocalizacao(false)}>
-          <div className="bg-white rounded-2xl p-xl w-full max-w-sm shadow-modal" onClick={e => e.stopPropagation()}>
-            <div className="flex items-center gap-md mb-lg">
-              <div className="w-12 h-12 bg-primary-fixed rounded-full flex items-center justify-center">
-                <Icone nome="location_on" tamanho={28} className="text-primary" />
-              </div>
-              <div>
-                <h3 className="font-semibold text-on-surface">Sua localização</h3>
-                <p className="text-sm text-on-surface-variant">São Paulo, SP — Pinheiros</p>
-              </div>
-            </div>
-            <div className="space-y-sm">
-              {['Usar localização atual', 'Digitar endereço manualmente'].map((op, i) => (
-                <button key={op}
-                  onClick={() => setModalLocalizacao(false)}
-                  className={`w-full p-md rounded-xl border text-left flex items-center gap-md transition-colors
-                    ${i === 0 ? 'border-primary bg-primary-fixed/20 text-primary' : 'border-surface-container hover:bg-surface-container text-on-surface'}`}>
-                  <Icone nome={i === 0 ? 'my_location' : 'edit_location'} tamanho={20} />
-                  <span className="font-semibold text-sm">{op}</span>
-                </button>
-              ))}
-            </div>
-            <button onClick={() => setModalLocalizacao(false)} className="w-full mt-md text-on-surface-variant text-sm hover:text-on-surface">Cancelar</button>
-          </div>
-        </div>
-      )}
+      {/* Modal localização */}
+      {modalLocal && (
+        <div onClick={() => { setModalLocal(false); setModoManual(false) }} style={{
+          position:'fixed', inset:0, background:'rgba(0,0,0,0.45)',
+          zIndex:50, display:'flex', alignItems:'flex-end', justifyContent:'center', padding:16,
+        }}>
+          <div onClick={e => e.stopPropagation()} style={{
+            background:'white', borderRadius:24, padding:28,
+            width:'100%', maxWidth:420, boxShadow:'0 8px 48px rgba(0,0,0,0.2)',
+          }}>
+            <h3 style={{ fontSize:18, fontWeight:700, color:'var(--text)', margin:'0 0 6px' }}>
+              Sua localização
+            </h3>
+            <p style={{ fontSize:13, color:'var(--text-muted)', margin:'0 0 20px' }}>
+              Atual: <strong>{localizacao}</strong>
+            </p>
 
-      {/* Modal Mapa */}
-      {modalMapa && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={() => setModalMapa(false)}>
-          <div className="bg-white rounded-2xl w-full max-w-lg shadow-modal overflow-hidden" onClick={e => e.stopPropagation()}>
-            <div className="flex items-center justify-between p-lg border-b border-surface-container">
-              <h3 className="font-semibold text-on-surface">Itens no mapa</h3>
-              <button onClick={() => setModalMapa(false)} className="p-1 rounded-full hover:bg-surface-container">
-                <Icone nome="close" className="text-on-surface-variant" />
-              </button>
-            </div>
-            <div className="h-64 bg-surface-container-high flex flex-col items-center justify-center text-on-surface-variant">
-              <Icone nome="map" tamanho={64} className="text-outline mb-md" />
-              <p className="font-semibold">Mapa em breve</p>
-              <p className="text-sm mt-xs text-center px-lg">A visualização no mapa será disponibilizada em uma próxima versão.</p>
-            </div>
-            <div className="p-lg">
-              <p className="text-sm text-on-surface-variant text-center">
-                {itensFiltrados.length} itens disponíveis na sua região
-              </p>
-            </div>
+            {!modoManual ? (
+              <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
+                {/* GPS */}
+                <button onClick={usarGps} disabled={buscandoGps}
+                  style={{ padding:14, borderRadius:14, border:'2px solid #3d8068',
+                    background:'#f0f9f4', color:'#3d8068',
+                    display:'flex', alignItems:'center', gap:12,
+                    cursor: buscandoGps ? 'not-allowed' : 'pointer',
+                    fontWeight:600, fontSize:14, opacity: buscandoGps ? 0.7 : 1 }}>
+                  {buscandoGps ? (
+                    <div style={{ width:20, height:20, border:'2px solid #aadfc8',
+                      borderTopColor:'#3d8068', borderRadius:'50%',
+                      animation:'spin 0.8s linear infinite', flexShrink:0 }}/>
+                  ) : (
+                    <Icone nome="my_location" tamanho={20}/>
+                  )}
+                  {buscandoGps ? 'Buscando localização...' : 'Usar localização atual (GPS)'}
+                </button>
+
+                {/* Manual */}
+                <button onClick={() => setModoManual(true)}
+                  style={{ padding:14, borderRadius:14, border:'2px solid #e5cfc0',
+                    background:'white', color:'var(--text)',
+                    display:'flex', alignItems:'center', gap:12,
+                    cursor:'pointer', fontWeight:600, fontSize:14 }}>
+                  <Icone nome="edit_location" tamanho={20}/>
+                  Digitar endereço manualmente
+                </button>
+              </div>
+            ) : (
+              <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
+                <input
+                  autoFocus
+                  value={enderecoManual}
+                  onChange={e => setEnderecoManual(e.target.value)}
+                  onKeyDown={e => e.key === 'Enter' && salvarEnderecoManual()}
+                  placeholder="Ex: Pinheiros, São Paulo"
+                  style={{ width:'100%', padding:'12px 16px', fontSize:15,
+                    border:'2px solid #c4674e', borderRadius:12, outline:'none',
+                    fontFamily:'inherit', boxShadow:'0 0 0 3px rgba(196,103,78,0.15)' }}
+                />
+                <div style={{ display:'flex', gap:8 }}>
+                  <button onClick={() => setModoManual(false)}
+                    style={{ flex:1, padding:'11px 0', borderRadius:12, border:'2px solid #e5cfc0',
+                      background:'white', cursor:'pointer', fontWeight:600, fontSize:14, fontFamily:'inherit' }}>
+                    Voltar
+                  </button>
+                  <button onClick={salvarEnderecoManual}
+                    style={{ flex:2, padding:'11px 0', borderRadius:12, border:'none',
+                      background:'linear-gradient(135deg, #e85d3e, #c4674e)', color:'white',
+                      cursor:'pointer', fontWeight:700, fontSize:14, fontFamily:'inherit' }}>
+                    Confirmar
+                  </button>
+                </div>
+              </div>
+            )}
+
+            <button onClick={() => { setModalLocal(false); setModoManual(false) }}
+              style={{ width:'100%', marginTop:16, background:'none', border:'none',
+                cursor:'pointer', color:'var(--text-muted)', fontSize:14, padding:'8px 0' }}>
+              Cancelar
+            </button>
+            <style>{`@keyframes spin { to { transform: rotate(360deg) } }`}</style>
           </div>
         </div>
       )}

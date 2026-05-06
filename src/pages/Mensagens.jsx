@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useApp } from '../context/AppContext'
-import { Avatar, Icone } from '../components/ui'
+import { Avatar, Icone, Logo } from '../components/ui'
 import { usuarios, itens } from '../data/mock'
 
 const FILTROS = ['Todas', 'Doações', 'Anúncios']
@@ -92,23 +92,23 @@ export default function Mensagens() {
 
   return (
     <div className="flex flex-col bg-background" style={{ height: 'calc(100vh - 64px)' }}>
-      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-surface-container flex items-center justify-between px-4 h-16 flex-shrink-0">
-        <span className="text-2xl font-black text-primary">Doa aí</span>
+      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-creme-300 flex items-center justify-between px-4 h-16 flex-shrink-0">
+        <Logo height={72}/>
         <div className="flex gap-1">
-          <button onClick={() => navigate('/notificacoes')} className="p-2 rounded-full hover:bg-surface-container active:scale-95">
-            <Icone nome="notifications" className="text-on-surface-variant" />
+          <button onClick={() => navigate('/notificacoes')} className="p-2 rounded-full hover:bg-creme-200 active:scale-95">
+            <Icone nome="notifications" className="text-on-surface-muted" />
           </button>
         </div>
       </header>
 
       <div className="flex flex-1 overflow-hidden">
         {/* Sidebar */}
-        <aside className={`w-full md:w-72 lg:w-80 border-r border-surface-container flex flex-col flex-shrink-0 ${conversaAtiva ? 'hidden md:flex' : 'flex'}`}>
-          <div className="p-lg border-b border-surface-container flex-shrink-0">
+        <aside className={`w-full md:w-72 lg:w-80 border-r border-creme-300 flex flex-col flex-shrink-0 ${conversaAtiva ? 'hidden md:flex' : 'flex'}`}>
+          <div className="p-lg border-b border-creme-300 flex-shrink-0">
             <h2 className="text-h2 font-h2 text-on-surface">Mensagens</h2>
           </div>
 
-          <div className="flex flex-col gap-xs p-md border-b border-surface-container flex-shrink-0">
+          <div className="flex flex-col gap-xs p-md border-b border-creme-300 flex-shrink-0">
             {FILTROS.map((f, i) => {
               const count = conversasUnicas.filter(c => {
                 const item = itens.find(it => it.id === c.itemId)
@@ -119,11 +119,11 @@ export default function Mensagens() {
               return (
                 <button key={f} onClick={() => setFiltro(f)}
                   className={`flex items-center gap-md px-md py-sm rounded-lg text-left transition-colors
-                    ${filtro === f ? 'bg-primary text-on-primary' : 'text-on-surface-variant hover:bg-surface-container'}`}>
+                    ${filtro === f ? 'bg-primary text-on-primary' : 'text-on-surface-muted hover:bg-creme-200'}`}>
                   <Icone nome={i === 0 ? 'chat' : i === 1 ? 'volunteer_activism' : 'inventory_2'} tamanho={20} />
                   <span className="text-label-md flex-1">{f}</span>
                   <span className={`text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center
-                    ${filtro === f ? 'bg-on-primary text-primary' : 'bg-surface-container-high text-on-surface-variant'}`}>
+                    ${filtro === f ? 'bg-on-primary text-verde-600' : 'bg-creme-200 text-on-surface-muted'}`}>
                     {count}
                   </span>
                 </button>
@@ -133,7 +133,7 @@ export default function Mensagens() {
 
           <div className="flex-1 overflow-y-auto">
             {conversasFiltradas.length === 0 ? (
-              <div className="p-xl text-center text-on-surface-variant">
+              <div className="p-xl text-center text-on-surface-muted">
                 <Icone nome="chat_bubble_outline" tamanho={40} className="text-surface-container-highest mb-sm" />
                 <p className="text-sm">Nenhuma conversa</p>
               </div>
@@ -143,8 +143,8 @@ export default function Mensagens() {
               const ultimaMsg = c.mensagens[c.mensagens.length - 1]
               return (
                 <button key={c.id} onClick={() => setConversaAtiva(c.id)}
-                  className={`w-full flex items-center gap-md p-md border-b border-surface-container text-left hover:bg-surface-container transition-colors
-                    ${conversaAtiva === c.id ? 'bg-primary-fixed/30 border-l-2 border-l-primary' : ''}`}>
+                  className={`w-full flex items-center gap-md p-md border-b border-creme-300 text-left hover:bg-creme-200 transition-colors
+                    ${conversaAtiva === c.id ? 'bg-coral-50 border-l-2 border-l-primary' : ''}`}>
                   <div className="relative flex-shrink-0">
                     <Avatar src={p?.avatar} nome={p?.nome} tamanho={44} />
                     {c.naoLidas > 0 && <span className="absolute -top-1 -right-1 w-3 h-3 bg-primary rounded-full border-2 border-white" />}
@@ -152,9 +152,9 @@ export default function Mensagens() {
                   <div className="flex-1 min-w-0">
                     <div className="flex justify-between items-center mb-xs">
                       <span className="font-semibold text-on-surface text-sm truncate">{p?.nome}</span>
-                      <span className="text-xs text-on-surface-variant flex-shrink-0">{c.horario}</span>
+                      <span className="text-xs text-on-surface-muted flex-shrink-0">{c.horario}</span>
                     </div>
-                    <p className="text-sm text-on-surface-variant truncate">
+                    <p className="text-sm text-on-surface-muted truncate">
                       {ultimaMsg?.texto || c.ultimaMensagem || 'Sem mensagens ainda'}
                     </p>
                   </div>
@@ -168,7 +168,7 @@ export default function Mensagens() {
         {/* Chat */}
         <div className={`flex-1 flex flex-col overflow-hidden ${!conversaAtiva ? 'hidden md:flex' : 'flex'}`}>
           {!conversa ? (
-            <div className="flex-1 flex flex-col items-center justify-center text-on-surface-variant">
+            <div className="flex-1 flex flex-col items-center justify-center text-on-surface-muted">
               <Icone nome="chat_bubble_outline" tamanho={64} className="text-surface-container-highest mb-md" />
               <p className="text-h3 font-h3">Selecione uma conversa</p>
               <p className="text-body-md mt-xs">Escolha à esquerda para começar</p>
@@ -176,15 +176,15 @@ export default function Mensagens() {
           ) : (
             <>
               {/* Header do chat */}
-              <div className="flex items-center gap-md px-lg py-md border-b border-surface-container bg-white flex-shrink-0">
-                <button onClick={() => setConversaAtiva(null)} className="md:hidden p-1 rounded-full hover:bg-surface-container">
-                  <Icone nome="arrow_back" className="text-on-surface-variant" />
+              <div className="flex items-center gap-md px-lg py-md border-b border-creme-300 bg-white flex-shrink-0">
+                <button onClick={() => setConversaAtiva(null)} className="md:hidden p-1 rounded-full hover:bg-creme-200">
+                  <Icone nome="arrow_back" className="text-on-surface-muted" />
                 </button>
-                <button onClick={() => navigate(`/perfil/${participante?.id}`)} className="flex items-center gap-md flex-1 text-left hover:bg-surface-container rounded-lg p-sm -m-sm transition-colors">
+                <button onClick={() => navigate(`/perfil/${participante?.id}`)} className="flex items-center gap-md flex-1 text-left hover:bg-creme-200 rounded-lg p-sm -m-sm transition-colors">
                   <Avatar src={participante?.avatar} nome={participante?.nome} tamanho={40} />
                   <div>
                     <p className="font-semibold text-on-surface">{participante?.nome}</p>
-                    <p className="text-xs text-primary flex items-center gap-xs">
+                    <p className="text-xs text-verde-600 flex items-center gap-xs">
                       <span className="w-2 h-2 bg-primary rounded-full" />Online agora
                     </p>
                   </div>
@@ -193,13 +193,13 @@ export default function Mensagens() {
                   {/* Botão de ligar — abre discador do dispositivo */}
                   <button
                     onClick={() => alert('Recurso de chamada disponível em breve.\nCombine os detalhes pelo chat.')}
-                    className="p-2 rounded-full hover:bg-surface-container active:scale-95"
+                    className="p-2 rounded-full hover:bg-creme-200 active:scale-95"
                     title="Ligar">
-                    <Icone nome="call" className="text-on-surface-variant" />
+                    <Icone nome="call" className="text-on-surface-muted" />
                   </button>
                   {/* Mais opções */}
-                  <button onClick={() => setModalOpcoes(true)} className="p-2 rounded-full hover:bg-surface-container active:scale-95" title="Mais opções">
-                    <Icone nome="more_vert" className="text-on-surface-variant" />
+                  <button onClick={() => setModalOpcoes(true)} className="p-2 rounded-full hover:bg-creme-200 active:scale-95" title="Mais opções">
+                    <Icone nome="more_vert" className="text-on-surface-muted" />
                   </button>
                 </div>
               </div>
@@ -208,15 +208,15 @@ export default function Mensagens() {
               {itemConversa && (
                 <button
                   onClick={() => navigate(`/item/${itemConversa.id}`)}
-                  className="px-lg py-sm border-b border-surface-container bg-surface-container-low flex-shrink-0 hover:bg-surface-container transition-colors w-full text-left">
+                  className="px-lg py-sm border-b border-creme-300 bg-creme-100 flex-shrink-0 hover:bg-creme-200 transition-colors w-full text-left">
                   <div className="flex items-center gap-md">
                     <img src={itemConversa.fotos[0]} alt="" className="w-12 h-12 rounded-lg object-cover" />
                     <div className="flex-1">
-                      <p className="text-xs text-on-surface-variant uppercase tracking-wider font-semibold">Interesse em</p>
+                      <p className="text-xs text-on-surface-muted uppercase tracking-wider font-semibold">Interesse em</p>
                       <p className="font-semibold text-on-surface text-sm">{itemConversa.titulo}</p>
-                      <p className="text-xs text-primary">Disponível para doação</p>
+                      <p className="text-xs text-verde-600">Disponível para doação</p>
                     </div>
-                    <Icone nome="chevron_right" tamanho={18} className="text-on-surface-variant" />
+                    <Icone nome="chevron_right" tamanho={18} className="text-on-surface-muted" />
                   </div>
                 </button>
               )}
@@ -224,7 +224,7 @@ export default function Mensagens() {
               {/* Mensagens */}
               <div className="flex-1 overflow-y-auto px-lg py-md space-y-md" onClick={() => { setModalEmoji(false); setModalOpcoes(false) }}>
                 {conversa.mensagens.length === 0 ? (
-                  <div className="flex flex-col items-center justify-center h-full text-on-surface-variant text-center py-xxl">
+                  <div className="flex flex-col items-center justify-center h-full text-on-surface-muted text-center py-xxl">
                     <Icone nome="waving_hand" tamanho={48} className="text-tertiary mb-md" />
                     <p className="font-semibold">Diga olá para {participante?.nome}!</p>
                     <p className="text-sm mt-xs">Combine os detalhes da doação diretamente aqui.</p>
@@ -236,9 +236,9 @@ export default function Mensagens() {
                     <div key={msg.id} className={`flex gap-sm ${minha ? 'justify-end' : 'justify-start'}`}>
                       {!minha && <Avatar src={participante?.avatar} nome={participante?.nome} tamanho={32} />}
                       <div className={`max-w-xs lg:max-w-sm rounded-2xl px-md py-sm
-                        ${minha ? 'bg-primary text-on-primary rounded-br-sm' : 'bg-surface-container text-on-surface rounded-bl-sm'}`}>
+                        ${minha ? 'bg-primary text-on-primary rounded-br-sm' : 'bg-creme-100 text-on-surface rounded-bl-sm'}`}>
                         <p className="text-body-md">{msg.texto}</p>
-                        <p className={`text-xs mt-xs ${minha ? 'text-on-primary/70' : 'text-on-surface-variant'}`}>{msg.horario}</p>
+                        <p className={`text-xs mt-xs ${minha ? 'text-on-primary/70' : 'text-on-surface-muted'}`}>{msg.horario}</p>
                       </div>
                     </div>
                   )
@@ -247,10 +247,10 @@ export default function Mensagens() {
               </div>
 
               {/* Input */}
-              <div className="border-t border-surface-container bg-white flex-shrink-0">
+              <div className="border-t border-creme-300 bg-white flex-shrink-0">
                 {/* Picker de emoji */}
                 {modalEmoji && (
-                  <div className="px-lg py-sm border-b border-surface-container flex gap-sm flex-wrap">
+                  <div className="px-lg py-sm border-b border-creme-300 flex gap-sm flex-wrap">
                     {emojis.map(e => (
                       <button key={e} onClick={() => inserirEmoji(e)}
                         className="text-2xl hover:scale-125 transition-transform active:scale-95">{e}</button>
@@ -261,19 +261,19 @@ export default function Mensagens() {
                   {/* Botão + para anexar imagem */}
                   <div className="relative">
                     <button type="button" onClick={() => { setModalAnexo(!modalAnexo); setModalEmoji(false) }}
-                      className="p-2 rounded-full hover:bg-surface-container active:scale-95">
-                      <Icone nome="add_circle" className="text-on-surface-variant" />
+                      className="p-2 rounded-full hover:bg-creme-200 active:scale-95">
+                      <Icone nome="add_circle" className="text-on-surface-muted" />
                     </button>
                     {modalAnexo && (
-                      <div className="absolute bottom-12 left-0 bg-white rounded-xl shadow-modal border border-surface-container overflow-hidden z-10 w-48">
+                      <div className="absolute bottom-12 left-0 bg-white rounded-xl shadow-modal border border-creme-300 overflow-hidden z-10 w-48">
                         <button type="button" onClick={() => anexoRef.current?.click()}
-                          className="w-full flex items-center gap-md px-md py-sm hover:bg-surface-container transition-colors text-left">
-                          <Icone nome="photo" tamanho={20} className="text-on-surface-variant" />
+                          className="w-full flex items-center gap-md px-md py-sm hover:bg-creme-200 transition-colors text-left">
+                          <Icone nome="photo" tamanho={20} className="text-on-surface-muted" />
                           <span className="text-sm font-medium">Enviar imagem</span>
                         </button>
                         <button type="button" onClick={() => { enviarMensagem(conversaAtiva, '📍 Localização compartilhada'); setModalAnexo(false) }}
-                          className="w-full flex items-center gap-md px-md py-sm hover:bg-surface-container transition-colors text-left">
-                          <Icone nome="location_on" tamanho={20} className="text-on-surface-variant" />
+                          className="w-full flex items-center gap-md px-md py-sm hover:bg-creme-200 transition-colors text-left">
+                          <Icone nome="location_on" tamanho={20} className="text-on-surface-muted" />
                           <span className="text-sm font-medium">Compartilhar localização</span>
                         </button>
                       </div>
@@ -284,12 +284,12 @@ export default function Mensagens() {
                   <input value={texto} onChange={e => setTexto(e.target.value)}
                     onClick={() => { setModalEmoji(false); setModalAnexo(false) }}
                     placeholder="Digite sua mensagem..."
-                    className="flex-1 bg-surface-container rounded-full px-md py-sm outline-none text-on-surface text-body-md" />
+                    className="flex-1 bg-creme-100 rounded-full px-md py-sm outline-none text-on-surface text-body-md" />
 
                   {/* Emoji picker */}
                   <button type="button" onClick={() => { setModalEmoji(!modalEmoji); setModalAnexo(false) }}
-                    className="p-2 rounded-full hover:bg-surface-container active:scale-95">
-                    <Icone nome="sentiment_satisfied" className={`${modalEmoji ? 'text-primary' : 'text-on-surface-variant'}`} />
+                    className="p-2 rounded-full hover:bg-creme-200 active:scale-95">
+                    <Icone nome="sentiment_satisfied" className={`${modalEmoji ? 'text-verde-600' : 'text-on-surface-muted'}`} />
                   </button>
 
                   <button type="submit" disabled={!texto.trim()}
@@ -307,7 +307,7 @@ export default function Mensagens() {
       {modalOpcoes && (
         <div className="fixed inset-0 bg-black/40 z-50 flex items-end justify-center p-4" onClick={() => setModalOpcoes(false)}>
           <div className="bg-white rounded-2xl w-full max-w-sm shadow-modal overflow-hidden" onClick={e => e.stopPropagation()}>
-            <div className="p-lg border-b border-surface-container">
+            <div className="p-lg border-b border-creme-300">
               <p className="font-semibold text-on-surface">Conversa com {participante?.nome}</p>
             </div>
             {[
@@ -317,13 +317,13 @@ export default function Mensagens() {
               { icone: 'delete', label: 'Apagar conversa', acao: () => { setModalOpcoes(false); setConversaAtiva(null) }, cor: 'text-error' },
             ].map(({ icone, label, acao, cor }) => (
               <button key={label} onClick={acao}
-                className="w-full flex items-center gap-md px-lg py-md hover:bg-surface-container transition-colors text-left">
-                <Icone nome={icone} className={cor || 'text-on-surface-variant'} />
+                className="w-full flex items-center gap-md px-lg py-md hover:bg-creme-200 transition-colors text-left">
+                <Icone nome={icone} className={cor || 'text-on-surface-muted'} />
                 <span className={`font-medium text-sm ${cor || 'text-on-surface'}`}>{label}</span>
               </button>
             ))}
-            <div className="p-md border-t border-surface-container">
-              <button onClick={() => setModalOpcoes(false)} className="w-full text-on-surface-variant text-sm hover:text-on-surface py-sm">Fechar</button>
+            <div className="p-md border-t border-creme-300">
+              <button onClick={() => setModalOpcoes(false)} className="w-full text-on-surface-muted text-sm hover:text-on-surface py-sm">Fechar</button>
             </div>
           </div>
         </div>
